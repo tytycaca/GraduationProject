@@ -27,7 +27,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 
 	int vertexCount, textureCount, normalCount, faceCount;
 
-	char filename[MODELNUM][256] = { "Floor.obj" };
+	char filename[MODELNUM][256] = { "Floor.obj", "Querychan_Shizuoka_Body.obj", "Querychan_Shizuoka_Face.obj", "Querychan_Shizuoka_Hat.obj" };
 
 	for (int i = 0; i < MODELNUM; i++)
 	{

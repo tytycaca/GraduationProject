@@ -67,6 +67,10 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		}
 	}
 
+	///////////
+	// Floor //
+	///////////
+
 	// Initialize the model0 object. (Floor.obj)
 	result = m_Model[0]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject/Floor.txt",
 		(WCHAR*)L"../GraduationProject/Texture/boxTexture.jpg");
@@ -75,6 +79,39 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
 	}
+
+
+	////////////////////////
+	// Querychan_Shizuoka //
+	////////////////////////
+
+	// Initialize the model0 object. (Querychan_Shizuoka_Body.obj)
+	result = m_Model[1]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject/Querychan_Shizuoka_Body.txt",
+		(WCHAR*)L"../GraduationProject/Texture/Tex_Body_Shizuoka.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model0 object. (Querychan_Shizuoka_Face.obj)
+	result = m_Model[2]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject/Querychan_Shizuoka_Face.txt",
+		(WCHAR*)L"../GraduationProject/Texture/Tex_Face_Defo_Shizuoka.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model0 object. (Querychan_Shizuoka_Hat.obj)
+	result = m_Model[3]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject/Querychan_Shizuoka_Hat.txt",
+		(WCHAR*)L"../GraduationProject/Texture/Tex_Hat_Shizuoka.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
 
 	// Create the light shader object.
 	m_LightShader = new LightShaderClass;
@@ -156,17 +193,24 @@ void GraphicsClass::Shutdown()
 }
 
 
-bool GraphicsClass::Frame()
+bool GraphicsClass::Frame(double deltaTime)
 {
 	bool result;
 	static float rotation = 0.0f;
 
 
+	//// Update the rotation variable each frame.
+	//rotation += (float)D3DX_PI * 0.005f;
+	//if(rotation > 360.0f)
+	//{
+	//	rotation -= 360.0f;
+	//}
+
 	// Update the rotation variable each frame.
-	rotation += (float)D3DX_PI * 0.005f;
-	if(rotation > 360.0f)
+	rotation += 1.0f * deltaTime;
+	if (rotation > 6.28f)
 	{
-		rotation -= 360.0f;
+		rotation = 0.0f;
 	}
 	
 	// Render the graphics scene.
@@ -216,6 +260,56 @@ bool GraphicsClass::Render(float rotation)
 	m_Model[0]->Render(m_D3D->GetDeviceContext());
 	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model[0]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
 		m_Model[0]->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
+		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
+	if (!result)
+	{
+		return false;
+	}
+
+
+	////////////////////////
+	// Querychan_Shizuoka //
+	////////////////////////
+
+	// Body
+	D3DXMatrixRotationY(&worldMatrix, rotation);
+	D3DXMatrixScaling(&scaleMatrix, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &scaleMatrix);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &translateMatrix);
+	m_Model[1]->Render(m_D3D->GetDeviceContext());
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model[1]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_Model[1]->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
+		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Face
+	D3DXMatrixRotationY(&worldMatrix, rotation);
+	D3DXMatrixScaling(&scaleMatrix, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &scaleMatrix);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &translateMatrix);
+	m_Model[2]->Render(m_D3D->GetDeviceContext());
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model[2]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_Model[2]->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
+		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Hat
+	D3DXMatrixRotationY(&worldMatrix, rotation);
+	D3DXMatrixScaling(&scaleMatrix, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &scaleMatrix);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &translateMatrix);
+	m_Model[3]->Render(m_D3D->GetDeviceContext());
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model[3]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_Model[3]->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 	if (!result)
 	{

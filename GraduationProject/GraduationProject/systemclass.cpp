@@ -57,6 +57,13 @@ bool SystemClass::Initialize()
 	{
 		return false;
 	}
+
+	// Create the deltatime object.
+	m_DeltaTime = new DeltaTimeClass;
+	if (!m_DeltaTime)
+	{
+		return false;
+	}
 	
 	return true;
 }
@@ -130,6 +137,7 @@ void SystemClass::Run()
 bool SystemClass::Frame()
 {
 	bool result;
+	double deltaTime;
 
 
 	// Check if the user pressed escape and wants to exit the application.
@@ -138,8 +146,12 @@ bool SystemClass::Frame()
 		return false;
 	}
 
+	// Create deltatime by GetFrameTime() function
+	m_DeltaTime->StartTimer();
+	deltaTime = m_DeltaTime->GetFrameTime();
+
 	// Do the frame processing for the graphics object.
-	result = m_Graphics->Frame();
+	result = m_Graphics->Frame(deltaTime);
 	if(!result)
 	{
 		return false;
