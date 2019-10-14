@@ -137,7 +137,7 @@ void SystemClass::Run()
 bool SystemClass::Frame()
 {
 	bool result;
-	double deltaTime;
+	double deltaTime = 0.0f;
 
 
 	// Check if the user pressed escape and wants to exit the application.

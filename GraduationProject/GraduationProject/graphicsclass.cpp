@@ -199,19 +199,19 @@ bool GraphicsClass::Frame(double deltaTime)
 	static float rotation = 0.0f;
 
 
-	//// Update the rotation variable each frame.
-	//rotation += (float)D3DX_PI * 0.005f;
-	//if(rotation > 360.0f)
-	//{
-	//	rotation -= 360.0f;
-	//}
-
 	// Update the rotation variable each frame.
-	rotation += 1.0f * deltaTime;
-	if (rotation > 6.28f)
+	rotation += (float)D3DX_PI * 0.5f * deltaTime;
+	if(rotation > 2 * (float)D3DX_PI)
 	{
-		rotation = 0.0f;
+		rotation -= 2 * (float)D3DX_PI;
 	}
+
+	//// Update the rotation variable each frame.
+	//rotation += 1.0f * deltaTime;
+	//if (rotation > 6.28f)
+	//{
+	//	rotation = 0.0f;
+	//}
 	
 	// Render the graphics scene.
 	result = Render(rotation);
