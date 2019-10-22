@@ -33,6 +33,7 @@
     <Text Include="data\fontdata.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="bluefreeze.dds" />
     <Image Include="data\font.dds" />
     <Image Include="data\marble.dds" />
     <Image Include="data\metal.dds" />

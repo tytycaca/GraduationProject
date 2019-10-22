@@ -91,6 +91,9 @@
     <Image Include="data\font.dds">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="bluefreeze.dds">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="systemclass.cpp">
