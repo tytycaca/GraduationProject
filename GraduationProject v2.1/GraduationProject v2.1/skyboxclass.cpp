@@ -164,7 +164,7 @@ void SkyboxClass::InitializeSkyboxShader(ID3D11Device* d3d11Device)
 
 	//Load the texture
 	ID3D11Texture2D* SMTexture = 0;
-	hr = D3DX11CreateTextureFromFile(d3d11Device, L"bluefreeze.dds",
+	hr = D3DX11CreateTextureFromFile(d3d11Device, L"strato.dds",
 		&loadSMInfo, 0, (ID3D11Resource**)&SMTexture, 0);
 
 	//Create the textures description
