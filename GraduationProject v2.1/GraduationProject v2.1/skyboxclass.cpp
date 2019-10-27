@@ -34,7 +34,8 @@ void SkyboxClass::CreateSphere(ID3D11Device* d3d11Device, int LatLines, int Long
 
 	std::vector<Vertex> vertices(NumSphereVertices);
 
-	XMVECTOR currVertPos = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	D3DXVECTOR3 currVertPos = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+	D3DXVECTOR3 tFromNormal = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 
 	vertices[0].pos.x = 0.0f;
 	vertices[0].pos.y = 0.0f;
@@ -43,16 +44,16 @@ void SkyboxClass::CreateSphere(ID3D11Device* d3d11Device, int LatLines, int Long
 	for (DWORD i = 0; i < LatLines - 2; ++i)
 	{
 		spherePitch = (i + 1) * (3.14 / (LatLines - 1));
-		Rotationx = XMMatrixRotationX(spherePitch);
+		D3DXMatrixRotationX(&Rotationx, spherePitch);
 		for (DWORD j = 0; j < LongLines; ++j)
 		{
 			sphereYaw = j * (6.28 / (LongLines));
-			Rotationy = XMMatrixRotationZ(sphereYaw);
-			currVertPos = XMVector3TransformNormal(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), (Rotationx * Rotationy));
-			currVertPos = XMVector3Normalize(currVertPos);
-			vertices[i*LongLines + j + 1].pos.x = XMVectorGetX(currVertPos);
-			vertices[i*LongLines + j + 1].pos.y = XMVectorGetY(currVertPos);
-			vertices[i*LongLines + j + 1].pos.z = XMVectorGetZ(currVertPos);
+			D3DXMatrixRotationZ(&Rotationy, sphereYaw);
+			D3DXVec3TransformNormal(&currVertPos, &D3DXVECTOR3(0.0f, 0.0f, 1.0f), &(Rotationx * Rotationy));
+			D3DXVec3Normalize(&currVertPos, &currVertPos);
+			vertices[i*LongLines + j + 1].pos.x = currVertPos.x;
+			vertices[i*LongLines + j + 1].pos.y = currVertPos.y;
+			vertices[i*LongLines + j + 1].pos.z = currVertPos.z;
 		}
 	}
 
@@ -224,11 +225,11 @@ void SkyboxClass::InitializeSkyboxShader(ID3D11Device* d3d11Device)
 }
 
 
-void SkyboxClass::RenderSkyboxShader(ID3D11Device* d3d11Device, ID3D11DeviceContext* d3d11DevCon, XMMATRIX sphereWorld, XMMATRIX camView, XMMATRIX camProjection)
+void SkyboxClass::RenderSkyboxShader(ID3D11Device* d3d11Device, ID3D11DeviceContext* d3d11DevCon, D3DXMATRIX sphereWorld, D3DXMATRIX camView, D3DXMATRIX camProjection)
 {
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
-	XMMATRIX WVP;
+	D3DXMATRIX WVP;
 	cbPerObject cbPerObj;
 
 	//Set the spheres index buffer
@@ -238,8 +239,8 @@ void SkyboxClass::RenderSkyboxShader(ID3D11Device* d3d11Device, ID3D11DeviceCont
 
 	//Set the WVP matrix and send it to the constant buffer in effect file
 	WVP = sphereWorld * camView * camProjection;
-	cbPerObj.WVP = XMMatrixTranspose(WVP);
-	cbPerObj.World = XMMatrixTranspose(sphereWorld);
+	D3DXMatrixTranspose(&cbPerObj.WVP, &WVP);
+	D3DXMatrixTranspose(&cbPerObj.World, &sphereWorld);
 
 	d3d11DevCon->UpdateSubresource(cbPerObjectBuffer, 0, NULL, &cbPerObj, 0, 0);
 	d3d11DevCon->VSSetConstantBuffers(0, 1, &cbPerObjectBuffer);

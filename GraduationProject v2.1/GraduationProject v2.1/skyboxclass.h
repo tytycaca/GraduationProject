@@ -35,23 +35,23 @@ class SkyboxClass
 			float nx, float ny, float nz)
 			: pos(x, y, z), texCoord(u, v), normal(nx, ny, nz) {}
 
-		XMFLOAT3 pos;
-		XMFLOAT2 texCoord;
-		XMFLOAT3 normal;
+		D3DXVECTOR3 pos;
+		D3DXVECTOR2 texCoord;
+		D3DXVECTOR3 normal;
 	};
 
 	struct cbPerObject
 	{
-		XMMATRIX  WVP;
-		XMMATRIX World;
+		D3DXMATRIX  WVP;
+		D3DXMATRIX World;
 	};
 
 
 	/*ID3D11Device* d3d11Device;*/
 
-	XMMATRIX Rotationx;
-	XMMATRIX Rotationy;
-	XMMATRIX Rotationz;
+	D3DXMATRIX Rotationx;
+	D3DXMATRIX Rotationy;
+	D3DXMATRIX Rotationz;
 
 	ID3D11Buffer* sphereIndexBuffer;
 	ID3D11Buffer* sphereVertBuffer;
@@ -77,7 +77,7 @@ class SkyboxClass
 public:
 	void CreateSphere(ID3D11Device* , int, int);
 	void InitializeSkyboxShader(ID3D11Device*);
-	void RenderSkyboxShader(ID3D11Device*, ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX);
+	void RenderSkyboxShader(ID3D11Device*, ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX);
 	void Shutdown();
 };
 

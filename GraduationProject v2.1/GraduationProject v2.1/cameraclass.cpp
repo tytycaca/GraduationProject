@@ -89,6 +89,12 @@ D3DXVECTOR3 CameraClass::GetRotation()
 }
 
 
+D3DXVECTOR3 CameraClass::GetLookAtVector()
+{
+	return originLookAt;
+}
+
+
 void CameraClass::Render()
 {
 	D3DXVECTOR3 up, position, lookAt;
@@ -122,6 +128,8 @@ void CameraClass::Render()
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
 	D3DXVec3TransformCoord(&lookAt, &lookAt, &rotationMatrix);
 	D3DXVec3TransformCoord(&up, &up, &rotationMatrix);
+
+	originLookAt = lookAt;
 
 	//¼öÁ¤
 	m_up = up;

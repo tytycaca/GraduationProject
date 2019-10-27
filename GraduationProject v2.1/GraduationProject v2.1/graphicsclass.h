@@ -3,9 +3,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef _GRAPHICSCLASS_H_
 #define _GRAPHICSCLASS_H_
-#define MODELNUM 5
+#define MODELNUM 4
 #define LIGHTNUM 2
 
+#include <vector>
 
 ///////////////////////
 // MY CLASS INCLUDES //
@@ -26,7 +27,7 @@
 /////////////
 // GLOBALS //
 /////////////
-const bool FULL_SCREEN = false;
+const bool FULL_SCREEN = true;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 100000.0f;
 const float SCREEN_NEAR = 0.1f;
@@ -53,8 +54,7 @@ private:
 	bool Render(float, DIMOUSESTATE);
 
 private:
-	int insNum;
-	D3DXVECTOR3 camPos[100];
+	vector<D3DXVECTOR3> insPos;
 	D3DClass* m_D3D;
 	ShaderManagerClass* m_ShaderManager;
 	CameraClass* m_Camera;

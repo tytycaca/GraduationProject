@@ -26,10 +26,10 @@ public:
 
 	D3DXVECTOR3 GetPosition();
 	D3DXVECTOR3 GetRotation();
+	D3DXVECTOR3 GetLookAtVector();
 
 	void Render();
 	void GetViewMatrix(D3DXMATRIX&);
-
 	void FrontWalk(long);
 	void SideWalk(long);
 	void CheckRange();
@@ -42,7 +42,7 @@ private:
 	float m_rotationX, m_rotationY, m_rotationZ;
 	D3DXMATRIX m_viewMatrix;
 
-	D3DXVECTOR3 m_pos, m_lookAt, m_up;
+	D3DXVECTOR3 m_pos, m_lookAt, m_up, originLookAt;
 
 	DWORD m_dwElapsedTime;
 };

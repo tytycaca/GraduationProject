@@ -13,16 +13,12 @@ GraphicsClass::GraphicsClass()
 		m_Light[i] = 0;
 	for (int i = 0; i < MODELNUM; i++)
 		m_Model[i] = 0;
-	for (int i = 0; i < 100; i++)
-		camPos[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	m_PointLight0 = 0;
 
 	m_Text = 0;
 
 	m_Skybox = 0;
-
-	insNum = 0;
 }
 
 
@@ -224,14 +220,6 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	// Initialize the model4 object. (cube.obj)
-	result = m_Model[4]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v2.1/data/cube.txt",
-		(WCHAR*)L"../GraduationProject v2.1/data/marble.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
 
 	return true;
 }
@@ -362,6 +350,7 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 {
 	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix, translateMatrix, scaleMatrix;
+	D3DXMATRIX insMatrix;
 	D3DXMATRIX orthoMatrix;
 	D3DXVECTOR4 diffuseColor[1];
 	D3DXVECTOR4 lightPosition[1];
@@ -385,30 +374,36 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 	m_D3D->GetOrthoMatrix(orthoMatrix);
 
-	//////////////////
-	// CREAT SKYBOX //
-	//////////////////
+	///////////////////
+	// CREATE SKYBOX //
+	///////////////////
 
-	XMMATRIX sphereWorld;
-	XMMATRIX Scale;
-	XMMATRIX Translation;
+	D3DXMATRIX sphereWorld;
+	D3DXMATRIX Scale;
+	D3DXMATRIX Translation;
 
 	D3DXMATRIX viewMatrixTmp;
 	D3DXMATRIX projectionMatrixTmp;
 
 	//Reset sphereWorld
-	sphereWorld = XMMatrixIdentity();
+	D3DXMatrixIdentity(&sphereWorld);
 	//Define sphereWorld's world space matrix
-	Scale = XMMatrixScaling(5.0f, 5.0f, 5.0f);
+	D3DXMatrixScaling(&Scale, 5.0f, 5.0f, 5.0f);
 	//Make sure the sphere is always centered around camera
-	Translation = XMMatrixTranslation(m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z);
+	D3DXMatrixTranslation(&Translation, m_Camera->GetPosition().x, m_Camera->GetPosition().y, m_Camera->GetPosition().z);
 	//Set sphereWorld's world space using the transformations
 	sphereWorld = Scale * Translation;
 
 	m_Camera->GetViewMatrix(viewMatrixTmp);
 	m_D3D->GetProjectionMatrix(projectionMatrixTmp);
 
-	m_Skybox->RenderSkyboxShader(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), sphereWorld, (XMMATRIX)viewMatrixTmp, (XMMATRIX)projectionMatrixTmp);
+	// return Cullmode from D3D11_CULL_NONE to D3D11_CULL_BACK
+	m_Skybox->RenderSkyboxShader(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), sphereWorld, (D3DXMATRIX)viewMatrixTmp, (D3DXMATRIX)projectionMatrixTmp);
+	D3D11_RASTERIZER_DESC rasterDesc;
+	ID3D11RasterizerState* RSCullBack;
+	ZeroMemory(&rasterDesc, sizeof(D3D11_RASTERIZER_DESC));
+	rasterDesc.CullMode = D3D11_CULL_BACK;
+	m_D3D->GetDevice()->CreateRasterizerState(&rasterDesc, &RSCullBack);
 
 
 	///////////////////////
@@ -422,7 +417,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	// Floor
 	m_D3D->GetWorldMatrix(worldMatrix);
 	D3DXMatrixRotationY(&worldMatrix, 0.0f);
-	D3DXMatrixScaling(&scaleMatrix, 50.0f, 50.0f, 50.0f);
+	D3DXMatrixScaling(&scaleMatrix, 1000.0f, 1000.0f, 1000.0f);
 	D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &scaleMatrix);
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &translateMatrix);
@@ -495,21 +490,40 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	
 	if (mouseState.rgbButtons[0] & 0x80)
 	{
-		camPos[insNum] = m_Camera->GetPosition();
-		insNum++;
+		D3DXVECTOR3 tmpInsPos;
+		D3DXVECTOR3 transVec;
+		D3DXVec3Scale
+		(
+			&transVec,
+			&D3DXVECTOR3
+			(
+				m_Camera->GetLookAtVector().x * 20.0f,
+				m_Camera->GetLookAtVector().y * 20.0f,
+				m_Camera->GetLookAtVector().z * 20.0f
+			),
+			10.0f
+		);
+		D3DXVec3Add(&tmpInsPos, &m_Camera->GetPosition(), &transVec);
+		insPos.push_back(tmpInsPos);
 	}
 
-	for (int i = 0; i < insNum; i++)
+	if (mouseState.rgbButtons[1] & 0x80)
 	{
-		m_D3D->GetWorldMatrix(worldMatrix);
+		if(!insPos.empty())
+			insPos.pop_back();
+	}
+
+	for (int i = 0; i < insPos.size(); i++)
+	{
+		m_D3D->GetWorldMatrix(insMatrix);
 		//D3DXMatrixRotationY(&worldMatrix, rotation);
 		D3DXMatrixScaling(&scaleMatrix, 0.1f, 0.1f, 0.1f);
-		D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &scaleMatrix);
-		D3DXMatrixTranslation(&translateMatrix, camPos[i].x, camPos[i].y, camPos[i].z);
-		D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &translateMatrix);
-		m_Model[2]->Render(m_D3D->GetDeviceContext());
-		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[2]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-			m_Model[2]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+		D3DXMatrixMultiply(&insMatrix, &insMatrix, &scaleMatrix);
+		D3DXMatrixTranslation(&translateMatrix, insPos[i].x, insPos[i].y, insPos[i].z);
+		D3DXMatrixMultiply(&insMatrix, &insMatrix, &translateMatrix);
+		m_Model[3]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[3]->GetIndexCount(), insMatrix, viewMatrix, projectionMatrix,
+			m_Model[3]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 		if (!result)
 		{
