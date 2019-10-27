@@ -41,7 +41,8 @@ public:
 	bool IsEscapePressed();
 	bool IsKeyPressed(int);
 	void GetMouseLocation(int&, int&);
-	void GetMouseRotation(DIMOUSESTATE&);
+	void GetMouseState(DIMOUSESTATE&);
+	void GetMouseButton(DIMOUSESTATE&);
 private:
 	bool ReadKeyboard();
 	bool ReadMouse();

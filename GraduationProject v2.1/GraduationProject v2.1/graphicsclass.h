@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef _GRAPHICSCLASS_H_
 #define _GRAPHICSCLASS_H_
-#define MODELNUM 4
+#define MODELNUM 5
 #define LIGHTNUM 2
 
 
@@ -44,15 +44,17 @@ public:
 
 	bool Initialize(int, int, HWND);
 	void Shutdown();
-	bool Frame(int, int, int, int, int, int, float);
+	bool Frame(int, int, int, int, int, int, float, DIMOUSESTATE);
 
 	void MoveCamera(int);
 	void RotateCamera(float, float, float);
 
 private:
-	bool Render(float);
+	bool Render(float, DIMOUSESTATE);
 
 private:
+	int insNum;
+	D3DXVECTOR3 camPos[100];
 	D3DClass* m_D3D;
 	ShaderManagerClass* m_ShaderManager;
 	CameraClass* m_Camera;

@@ -173,11 +173,18 @@ void InputClass::GetMouseLocation(int& mouseX, int& mouseY)
 	return;
 }
 
-void InputClass::GetMouseRotation(DIMOUSESTATE& mouse)
+void InputClass::GetMouseState(DIMOUSESTATE& mouse)
 {
 	mouse = m_mouseState;
 	return;
 }
+
+void InputClass::GetMouseButton(DIMOUSESTATE& mouse)
+{
+	mouse = m_mouseState;
+	return;
+}
+
 
 //void InputClass::KeyDown(unsigned int input)
 //{

@@ -13,12 +13,16 @@ GraphicsClass::GraphicsClass()
 		m_Light[i] = 0;
 	for (int i = 0; i < MODELNUM; i++)
 		m_Model[i] = 0;
+	for (int i = 0; i < 100; i++)
+		camPos[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	m_PointLight0 = 0;
 
 	m_Text = 0;
 
 	m_Skybox = 0;
+
+	insNum = 0;
 }
 
 
@@ -220,6 +224,15 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	// Initialize the model4 object. (cube.obj)
+	result = m_Model[4]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v2.1/data/cube.txt",
+		(WCHAR*)L"../GraduationProject v2.1/data/marble.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
 	return true;
 }
 
@@ -293,7 +306,7 @@ void GraphicsClass::Shutdown()
 }
 
 
-bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int screenY, float frameTime)
+bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int screenY, float frameTime, DIMOUSESTATE mouseState)
 {
 	bool result;
 	static float rotation = 0.0f;
@@ -336,7 +349,7 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 	if (!result) return false;
 
 	// Render the graphics scene.
-	result = Render(rotation);
+	result = Render(rotation, mouseState);
 	if(!result)
 	{
 		return false;
@@ -346,7 +359,7 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 }
 
 
-bool GraphicsClass::Render(float rotation)
+bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 {
 	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix, translateMatrix, scaleMatrix;
 	D3DXMATRIX orthoMatrix;
@@ -475,6 +488,34 @@ bool GraphicsClass::Render(float rotation)
 		return false;
 	}
 
+
+	//////////////////////////
+	// Runtime Instance Obj //
+	//////////////////////////
+	
+	if (mouseState.rgbButtons[0] & 0x80)
+	{
+		camPos[insNum] = m_Camera->GetPosition();
+		insNum++;
+	}
+
+	for (int i = 0; i < insNum; i++)
+	{
+		m_D3D->GetWorldMatrix(worldMatrix);
+		//D3DXMatrixRotationY(&worldMatrix, rotation);
+		D3DXMatrixScaling(&scaleMatrix, 0.1f, 0.1f, 0.1f);
+		D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &scaleMatrix);
+		D3DXMatrixTranslation(&translateMatrix, camPos[i].x, camPos[i].y, camPos[i].z);
+		D3DXMatrixMultiply(&worldMatrix, &worldMatrix, &translateMatrix);
+		m_Model[2]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[2]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+			m_Model[2]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
 
 	////////////////////
 	// Text Rendering //

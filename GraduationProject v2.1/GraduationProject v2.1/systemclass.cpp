@@ -254,13 +254,13 @@ bool SystemClass::Frame()
 	if (m_Input->IsKeyPressed(DIK_S)) m_Graphics->MoveCamera(DIK_S);
 	if (m_Input->IsKeyPressed(DIK_A)) m_Graphics->MoveCamera(DIK_A);
 	if (m_Input->IsKeyPressed(DIK_D)) m_Graphics->MoveCamera(DIK_D);
-	m_Input->GetMouseRotation(mouseState);
+	m_Input->GetMouseState(mouseState);
 	m_Graphics->RotateCamera(mouseState.lY / 20.0f, mouseState.lX / 20.0f, mouseState.lZ / 20.0f);
 
 
 	// Do the frame processing for the graphics object.
 	result = m_Graphics->Frame(m_Fps->GetFps(), m_Cpu->GetCpuPercentage(), m_Obj->GetCntObject(), m_Poly->GetCntPolygon(),
-		m_ScreenSize->GetScreenSizeX(), m_ScreenSize->GetScreenSizeY(), m_Timer->GetTime());
+		m_ScreenSize->GetScreenSizeX(), m_ScreenSize->GetScreenSizeY(), m_Timer->GetTime(), mouseState);
 	if(!result)
 	{
 		return false;

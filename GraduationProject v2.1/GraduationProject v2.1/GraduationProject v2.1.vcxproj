@@ -33,13 +33,13 @@
     <Text Include="data\fontdata.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bluefreeze.dds" />
     <Image Include="data\font.dds" />
     <Image Include="data\marble.dds" />
     <Image Include="data\metal.dds" />
     <Image Include="data\normal.dds" />
     <Image Include="data\stone.dds" />
     <Image Include="skymap.dds" />
+    <Image Include="strato.dds" />
     <Image Include="Texture\boxTexture.jpg" />
     <Image Include="Texture\Tex_Body_Shizuoka.png" />
     <Image Include="Texture\Tex_Face_Defo_Shizuoka.png" />
