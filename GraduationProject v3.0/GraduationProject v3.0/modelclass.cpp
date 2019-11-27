@@ -166,6 +166,9 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 		vertices[i].normal = D3DXVECTOR3(m_model[i].nx, m_model[i].ny, m_model[i].nz);
 
 		indices[i] = i;
+
+		vertexOut.push_back(D3DXVECTOR3(m_model[i].x, m_model[i].y, m_model[i].z));
+		indexOut.push_back(i);
 	}
 
 	// Set up the description of the static vertex buffer.
@@ -417,4 +420,16 @@ void ModelClass::ReleaseModel()
 	}
 
 	return;
+}
+
+
+vector<D3DXVECTOR3> ModelClass::getVertices()
+{
+	return vertexOut;
+}
+
+
+vector<DWORD> ModelClass::getIndices()
+{
+	return indexOut;
 }

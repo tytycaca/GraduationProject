@@ -65,6 +65,7 @@
     <ClCompile Include="pointlightclass.cpp" />
     <ClCompile Include="pointlightshaderclass.cpp" />
     <ClCompile Include="polyclass.cpp" />
+    <ClCompile Include="raycastingclass.cpp" />
     <ClCompile Include="screensizeclass.cpp" />
     <ClCompile Include="shadermanagerclass.cpp" />
     <ClCompile Include="skyboxclass.cpp" />
@@ -94,6 +95,7 @@
     <ClInclude Include="pointlightclass.h" />
     <ClInclude Include="pointlightshaderclass.h" />
     <ClInclude Include="polyclass.h" />
+    <ClInclude Include="raycastingclass.h" />
     <ClInclude Include="screensizeclass.h" />
     <ClInclude Include="shadermanagerclass.h" />
     <ClInclude Include="skyboxclass.h" />

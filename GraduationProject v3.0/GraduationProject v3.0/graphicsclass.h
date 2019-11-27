@@ -22,12 +22,13 @@
 
 #include "textclass.h"
 #include "skyboxclass.h"
+#include "raycastingclass.h"
 
 
 /////////////
 // GLOBALS //
 /////////////
-const bool FULL_SCREEN = false;
+const bool FULL_SCREEN = true;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 100000.0f;
 const float SCREEN_NEAR = 0.1f;
@@ -58,6 +59,7 @@ private:
 private:
 	vector<D3DXVECTOR3> insPos;
 	vector<float> insRot;
+
 	D3DClass* m_D3D;
 	ShaderManagerClass* m_ShaderManager;
 	CameraClass* m_Camera;
@@ -69,11 +71,15 @@ private:
 
 	SkyboxClass* m_Skybox;
 
+	RaycastingClass* m_Raycast;
+
 	float m_movement;
 	float m_AImovement;
 	int plusMinus;
 
 	float isStart;
+
+	HWND m_hwnd;
 };
 
 #endif

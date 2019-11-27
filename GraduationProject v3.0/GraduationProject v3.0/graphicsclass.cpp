@@ -40,6 +40,8 @@ GraphicsClass::~GraphicsClass()
 
 bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
+	m_hwnd = hwnd;
+
 	bool result;
 	D3DXMATRIX baseViewMatrix;
 
@@ -122,6 +124,18 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the text object.", L"Error", MB_OK);
+		return false;
+	}
+
+
+	/////////////
+	// Raycast //
+	/////////////
+
+	// Create the raycast object.
+	m_Raycast = new RaycastingClass;
+	if (!m_Raycast)
+	{
 		return false;
 	}
 
@@ -294,6 +308,12 @@ void GraphicsClass::Shutdown()
 		m_Skybox = 0;
 	}
 
+	if (m_Raycast)
+	{
+		delete m_Raycast;
+		m_Raycast = 0;
+	}
+
 	// Release the shader manager object.
 	if(m_ShaderManager)
 	{
@@ -448,7 +468,6 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	{
 		return false;
 	}
-
 
 	/////////////////
 	// Environment //
@@ -710,7 +729,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	
 	if (mouseState.rgbButtons[0] & 0x80)
 	{
-		D3DXVECTOR3 tmpInsPos;
+		/*D3DXVECTOR3 tmpInsPos;
 		D3DXVECTOR3 transVec;
 		D3DXVec3Scale
 		(
@@ -723,8 +742,10 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 			),
 			5.0f
 		);
-		D3DXVec3Add(&tmpInsPos, &m_Camera->GetPosition(), &transVec);
-		insPos.push_back(tmpInsPos);
+
+		D3DXVec3Add(&tmpInsPos, &m_Camera->GetPosition(), &transVec);*/
+
+		insPos.push_back(m_Raycast->doRaycast(m_hwnd, m_Model[0]->getVertices(), m_Model[0]->getIndices(), worldMatrix[1], projectionMatrix, viewMatrix));
 		//insRot.push_back(m_Camera->GetLookAtVector().y);
 	}
 
