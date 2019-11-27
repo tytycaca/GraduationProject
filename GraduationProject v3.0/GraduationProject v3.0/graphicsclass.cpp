@@ -241,13 +241,13 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 
-	/////////////
-	// Pickaxe //
-	/////////////
+	/////////////////
+	// SciFiCrates //
+	/////////////////
 
 	// Initialize the model4 object.
-	result = m_Model[4]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Pickaxe.txt",
-		(WCHAR*)L"../GraduationProject v3.0/Texture/Pickaxe.jpg");
+	result = m_Model[4]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/SciFiCrates.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/crateTexture.png");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -729,24 +729,25 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	
 	if (mouseState.rgbButtons[0] & 0x80)
 	{
-		/*D3DXVECTOR3 tmpInsPos;
+		D3DXVECTOR3 tmpInsPos;
 		D3DXVECTOR3 transVec;
 		D3DXVec3Scale
 		(
 			&transVec,
 			&D3DXVECTOR3
 			(
-				m_Camera->GetLookAtVector().x * 20.0f,
-				m_Camera->GetLookAtVector().y * 20.0f,
-				m_Camera->GetLookAtVector().z * 20.0f
+				m_Camera->GetLookAtVector().x * 10.0f,
+				m_Camera->GetLookAtVector().y * 10.0f,
+				m_Camera->GetLookAtVector().z * 10.0f
 			),
 			5.0f
 		);
 
-		D3DXVec3Add(&tmpInsPos, &m_Camera->GetPosition(), &transVec);*/
+		D3DXVec3Add(&tmpInsPos, &m_Camera->GetPosition(), &transVec);
 
-		insPos.push_back(m_Raycast->doRaycast(m_hwnd, m_Model[0]->getVertices(), m_Model[0]->getIndices(), worldMatrix[1], projectionMatrix, viewMatrix));
-		//insRot.push_back(m_Camera->GetLookAtVector().y);
+		/*insPos.push_back(m_Raycast->doRaycast(m_hwnd, m_Model[0]->getVertices(), m_Model[0]->getIndices(), worldMatrix[1], projectionMatrix, viewMatrix));*/
+		insPos.push_back(tmpInsPos);
+		insRot.push_back(m_Camera->GetLookAtVector().y);
 	}
 
 	if (mouseState.rgbButtons[1] & 0x80)
@@ -757,17 +758,18 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 		//	insRot.pop_back();
 	}
 
+
 	for (int i = 0; i < insPos.size(); i++)
 	{
 		m_D3D->GetWorldMatrix(insMatrix);
 		//D3DXMatrixRotationY(&insMatrix, insRot[i]);
 		//D3DXMatrixScaling(&scaleMatrix, 1.0f, 1.0f, 1.0f);
 		//D3DXMatrixMultiply(&insMatrix, &insMatrix, &scaleMatrix);
-		D3DXMatrixTranslation(&translateMatrix, insPos[i].x, insPos[i].y, insPos[i].z);
+		D3DXMatrixTranslation(&translateMatrix, insPos[i].x, /*insPos[i].y*/ 1.0f, insPos[i].z);
 		D3DXMatrixMultiply(&insMatrix, &insMatrix, &translateMatrix);
-		m_Model[3]->Render(m_D3D->GetDeviceContext());
-		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[3]->GetIndexCount(), insMatrix, viewMatrix, projectionMatrix,
-			m_Model[3]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+		m_Model[4]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[4]->GetIndexCount(), insMatrix, viewMatrix, projectionMatrix,
+			m_Model[4]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 		if (!result)
 		{
