@@ -80,6 +80,11 @@ private:
 	float isStart;
 
 	HWND m_hwnd;
+
+	int m_obj, m_poly;
+	bool checkFirst;
+
+	bool isLClicked, isRClicked;
 };
 
 #endif

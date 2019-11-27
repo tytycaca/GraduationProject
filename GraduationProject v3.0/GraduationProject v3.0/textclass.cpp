@@ -264,7 +264,7 @@ bool TextClass::SetCpu(int cpu, ID3D11DeviceContext* deviceContext)
 bool TextClass::SetObject(int obj, ID3D11DeviceContext* deviceContext)
 {
 	char tempString[32];
-	char objString[32];
+	char objString[64];
 	bool result;
 
 	_itoa_s(obj, tempString, 10);

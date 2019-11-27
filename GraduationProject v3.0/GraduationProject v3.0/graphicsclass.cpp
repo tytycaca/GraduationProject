@@ -25,6 +25,11 @@ GraphicsClass::GraphicsClass()
 	plusMinus = 1;
 
 	isStart = true;
+
+	checkFirst = false;
+
+	isLClicked = false;
+	isRClicked = false;
 }
 
 
@@ -339,6 +344,14 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 	bool result;
 	static float rotation = 0.0f;
 
+	if (!checkFirst)
+	{
+		m_obj = obj;
+		m_poly = poly;
+		
+		checkFirst = true;
+	}
+
 	//m_Camera->TickUpdate();
 
 	// Update the rotation variable each frame.
@@ -358,10 +371,10 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 	result = m_Text->SetCpu(cpu, m_D3D->GetDeviceContext());
 	if (!result) return false;
 
-	result = m_Text->SetObject(obj, m_D3D->GetDeviceContext());
+	result = m_Text->SetObject(m_obj, m_D3D->GetDeviceContext());
 	if (!result) return false;
 
-	result = m_Text->SetPolygon(poly, m_D3D->GetDeviceContext());
+	result = m_Text->SetPolygon(m_poly, m_D3D->GetDeviceContext());
 	if (!result) return false;
 
 	result = m_Text->SetScreenSize(screenX, screenY, m_D3D->GetDeviceContext());
@@ -727,8 +740,17 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	//// Runtime Instance Obj //
 	////////////////////////////
 	
-	if (mouseState.rgbButtons[0] & 0x80)
+	/////////////////
+	//  SciFiCrate //
+	/////////////////
+
+	if (mouseState.rgbButtons[0] && !isLClicked)
 	{
+		isLClicked = true;
+
+		m_obj += 1;
+		m_poly += 184;
+
 		D3DXVECTOR3 tmpInsPos;
 		D3DXVECTOR3 transVec;
 		D3DXVec3Scale
@@ -750,14 +772,28 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 		insRot.push_back(m_Camera->GetLookAtVector().y);
 	}
 
-	if (mouseState.rgbButtons[1] & 0x80)
+	if (mouseState.rgbButtons[1] && !isRClicked && !insPos.empty())
 	{
+		isRClicked = true;
+
+		m_obj -= 1;
+		m_poly -= 184;
+
 		if(!insPos.empty())
 			insPos.pop_back();
 		//if (!insRot.empty())
 		//	insRot.pop_back();
 	}
 
+	if (!mouseState.rgbButtons[0])
+	{
+		isLClicked = false;
+	}
+
+	if (!mouseState.rgbButtons[1])
+	{
+		isRClicked = false;
+	}
 
 	for (int i = 0; i < insPos.size(); i++)
 	{
