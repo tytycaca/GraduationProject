@@ -60,6 +60,7 @@
     <ClCompile Include="lightclass.cpp" />
     <ClCompile Include="lightshaderclass.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="md5modelclass.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="objclass.cpp" />
     <ClCompile Include="pointlightclass.cpp" />
@@ -90,6 +91,7 @@
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="lightclass.h" />
     <ClInclude Include="lightshaderclass.h" />
+    <ClInclude Include="md5modelclass.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="objclass.h" />
     <ClInclude Include="pointlightclass.h" />

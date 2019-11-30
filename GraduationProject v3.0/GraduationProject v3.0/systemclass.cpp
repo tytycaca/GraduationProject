@@ -270,6 +270,8 @@ bool SystemClass::Frame()
 		return false;
 	}
 
+	if (m_Input->IsKeyPressed(DIK_R)) m_Graphics->AnimChar(DIK_R, m_Timer->GetTime());
+
 	return true;
 }
 

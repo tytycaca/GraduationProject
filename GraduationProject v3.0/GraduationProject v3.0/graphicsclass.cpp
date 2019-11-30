@@ -20,6 +20,8 @@ GraphicsClass::GraphicsClass()
 
 	m_Skybox = 0;
 
+	m_Md5Model = 0;
+
 	m_movement = 0.0f;
 	m_AImovement = 0.0f;
 	plusMinus = 1;
@@ -200,6 +202,30 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		}
 	}
 
+
+	///////////////
+	// Md5 Model //
+	///////////////
+
+	// Create the Md5Model object.
+	m_Md5Model = new Md5ModelClass;
+	if (!m_Md5Model)
+	{
+		return false;
+	}
+
+	// Initialize the Md5Model object.
+	result = m_Md5Model->InitializeMd5Model(L"boy.md5mesh", L"boy.md5anim",m_D3D->GetDevice());
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the Md5Model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the Md5Shader.
+	m_Md5Model->InitializeMd5Shader(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), screenWidth, screenHeight);
+
+
 	///////////
 	// Floor //
 	///////////
@@ -319,6 +345,12 @@ void GraphicsClass::Shutdown()
 		m_Raycast = 0;
 	}
 
+	if (m_Md5Model)
+	{
+		delete m_Md5Model;
+		m_Md5Model = 0;
+	}
+
 	// Release the shader manager object.
 	if(m_ShaderManager)
 	{
@@ -387,7 +419,7 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 	if (!result) return false;
 
 	m_Camera->TickUpdate();
-	
+
 	// Render the graphics scene.
 	result = Render(rotation, mouseState);
 	if(!result)
@@ -456,6 +488,53 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	ZeroMemory(&rasterDesc, sizeof(D3D11_RASTERIZER_DESC));
 	rasterDesc.CullMode = D3D11_CULL_BACK;
 	m_D3D->GetDevice()->CreateRasterizerState(&rasterDesc, &RSCullBack);
+
+
+	/////////////////////
+	// RENDER MD5MODEL //
+	/////////////////////
+
+	/////////
+	// boy //
+	/////////
+
+	D3DXMATRIX md5World;
+	m_D3D->GetWorldMatrix(md5World);
+	D3DXMATRIX meshWorld;
+	m_D3D->GetWorldMatrix(meshWorld);
+
+	m_Md5Model->DrawMd5Model
+	(
+		m_D3D->GetDeviceContext(),
+		XMMATRIX
+		(
+			md5World._11, md5World._12, md5World._13, md5World._14,
+			md5World._21, md5World._22, md5World._23, md5World._24,
+			md5World._31, md5World._32, md5World._33, md5World._34,
+			md5World._41, md5World._42, md5World._43, md5World._44
+		),
+		XMMATRIX
+		(
+			meshWorld._11, meshWorld._12, meshWorld._13, meshWorld._14,
+			meshWorld._21, meshWorld._22, meshWorld._23, meshWorld._24,
+			meshWorld._31, meshWorld._32, meshWorld._33, meshWorld._34,
+			meshWorld._41, meshWorld._42, meshWorld._43, meshWorld._44
+		),
+		XMMATRIX
+		(
+			viewMatrix._11, viewMatrix._12, viewMatrix._13, viewMatrix._14,
+			viewMatrix._21, viewMatrix._22, viewMatrix._23, viewMatrix._24,
+			viewMatrix._31, viewMatrix._32, viewMatrix._33, viewMatrix._34,
+			viewMatrix._41, viewMatrix._42, viewMatrix._43, viewMatrix._44
+		),
+		XMMATRIX
+		(
+			projectionMatrix._11, projectionMatrix._12, projectionMatrix._13, projectionMatrix._14,
+			projectionMatrix._21, projectionMatrix._22, projectionMatrix._23, projectionMatrix._24,
+			projectionMatrix._31, projectionMatrix._32, projectionMatrix._33, projectionMatrix._34,
+			projectionMatrix._41, projectionMatrix._42, projectionMatrix._43, projectionMatrix._44
+		)
+	);
 
 
 	///////////////////////
@@ -885,4 +964,13 @@ void GraphicsClass::MovePadAI(float frametime)
 		plusMinus = -1;
 
 	m_AImovement += 0.5f * plusMinus * frametime;	
+}
+
+void GraphicsClass::AnimChar(int key, float frametime)
+{
+	if (key == DIK_R)
+	{
+		float timeFactor = 1.0f;	// You can speed up or slow down time by changing this
+		m_Md5Model->UpdateMD5Model(frametime*timeFactor, 0, m_D3D->GetDeviceContext());
+	}
 }

@@ -88,6 +88,9 @@
     <ClCompile Include="raycastingclass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="md5modelclass.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bumpmapshaderclass.h">
@@ -172,6 +175,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="raycastingclass.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="md5modelclass.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -19,10 +19,11 @@
 #include "modelclass.h"
 #include "bumpmodelclass.h"
 #include "inputclass.h"
-
 #include "textclass.h"
+
 #include "skyboxclass.h"
 #include "raycastingclass.h"
+#include "md5modelclass.h"
 
 
 /////////////
@@ -53,6 +54,8 @@ public:
 	void MovePad(int, float);
 	void MovePadAI(float);
 
+	void AnimChar(int, float);
+
 private:
 	bool Render(float, DIMOUSESTATE);
 
@@ -72,6 +75,8 @@ private:
 	SkyboxClass* m_Skybox;
 
 	RaycastingClass* m_Raycast;
+
+	Md5ModelClass* m_Md5Model;
 
 	float m_movement;
 	float m_AImovement;
