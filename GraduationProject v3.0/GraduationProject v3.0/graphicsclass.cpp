@@ -649,19 +649,19 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 		return false;
 	}
 
-	// SmallTree
-	m_D3D->GetWorldMatrix(worldMatrix[8]);
-	D3DXMatrixRotationY(&worldMatrix[8], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
-	D3DXMatrixMultiply(&worldMatrix[8], &worldMatrix[8], &translateMatrix);
-	m_Model[1]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[1]->GetIndexCount(), worldMatrix[8], viewMatrix, projectionMatrix,
-		m_Model[1]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
-		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
-	if (!result)
-	{
-		return false;
-	}
+	//// SmallTree
+	//m_D3D->GetWorldMatrix(worldMatrix[8]);
+	//D3DXMatrixRotationY(&worldMatrix[8], 0.0f);
+	//D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	//D3DXMatrixMultiply(&worldMatrix[8], &worldMatrix[8], &translateMatrix);
+	//m_Model[1]->Render(m_D3D->GetDeviceContext());
+	//result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[1]->GetIndexCount(), worldMatrix[8], viewMatrix, projectionMatrix,
+	//	m_Model[1]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	//	m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+	//if (!result)
+	//{
+	//	return false;
+	//}
 
 	// Rocks
 	m_D3D->GetWorldMatrix(worldMatrix[9]);
@@ -966,11 +966,8 @@ void GraphicsClass::MovePadAI(float frametime)
 	m_AImovement += 0.5f * plusMinus * frametime;	
 }
 
-void GraphicsClass::AnimChar(int key, float frametime)
+void GraphicsClass::AnimChar(float frametime)
 {
-	if (key == DIK_R)
-	{
-		float timeFactor = 1.0f;	// You can speed up or slow down time by changing this
-		m_Md5Model->UpdateMD5Model(frametime*timeFactor, 0, m_D3D->GetDeviceContext());
-	}
+	float timeFactor = 0.001f;	// You can speed up or slow down time by changing this
+	m_Md5Model->UpdateMD5Model(frametime*timeFactor, 0, m_D3D->GetDeviceContext());
 }

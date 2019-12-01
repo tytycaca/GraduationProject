@@ -1026,6 +1026,25 @@ void Md5ModelClass::UpdateMD5Model(float deltaTime, int animation, ID3D11DeviceC
 
 void Md5ModelClass::DrawMd5Model(ID3D11DeviceContext* d3d11DevCon, XMMATRIX md5World, XMMATRIX meshWorld, XMMATRIX camView, XMMATRIX camProjection)
 {
+	//Clear our render target and depth/stencil view
+	/*float bgColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	d3d11DevCon->ClearRenderTargetView(renderTargetView, bgColor);
+	d3d11DevCon->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);*/
+
+	constbuffPerFrame.light = light;
+	d3d11DevCon->UpdateSubresource(cbPerFrameBuffer, 0, NULL, &constbuffPerFrame, 0, 0);
+	d3d11DevCon->PSSetConstantBuffers(0, 1, &cbPerFrameBuffer);
+
+	////Set our Render Target
+	//d3d11DevCon->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
+
+	//Set the default blend state (no blending) for opaque objects
+	d3d11DevCon->OMSetBlendState(0, 0, 0xffffffff);
+
+	//Set Vertex and Pixel Shaders
+	d3d11DevCon->VSSetShader(VS, 0, 0);
+	d3d11DevCon->PSSetShader(PS, 0, 0);
+
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
@@ -1053,34 +1072,34 @@ void Md5ModelClass::DrawMd5Model(ID3D11DeviceContext* d3d11DevCon, XMMATRIX md5W
 		d3d11DevCon->DrawIndexed(MD5Model.subsets[i].indices.size(), 0, 0);
 	}
 
-	/////Draw our model's NON-transparent subsets/////
-	for (int i = 0; i < meshSubsets; ++i)
-	{
-		//Set the grounds index buffer
-		d3d11DevCon->IASetIndexBuffer(meshIndexBuff, DXGI_FORMAT_R32_UINT, 0);
-		//Set the grounds vertex buffer
-		d3d11DevCon->IASetVertexBuffers(0, 1, &meshVertBuff, &stride, &offset);
+	///////Draw our model's NON-transparent subsets/////
+	//for (int i = 0; i < meshSubsets; ++i)
+	//{
+	//	//Set the grounds index buffer
+	//	d3d11DevCon->IASetIndexBuffer(meshIndexBuff, DXGI_FORMAT_R32_UINT, 0);
+	//	//Set the grounds vertex buffer
+	//	d3d11DevCon->IASetVertexBuffers(0, 1, &meshVertBuff, &stride, &offset);
 
-		//Set the WVP matrix and send it to the constant buffer in effect file
-		WVP = meshWorld * camView * camProjection;
-		cbPerObj.WVP = XMMatrixTranspose(WVP);
-		cbPerObj.World = XMMatrixTranspose(meshWorld);
-		cbPerObj.difColor = material[meshSubsetTexture[i]].difColor;
-		cbPerObj.hasTexture = material[meshSubsetTexture[i]].hasTexture;
-		cbPerObj.hasNormMap = material[meshSubsetTexture[i]].hasNormMap;
-		d3d11DevCon->UpdateSubresource(cbPerObjectBuffer, 0, NULL, &cbPerObj, 0, 0);
-		d3d11DevCon->VSSetConstantBuffers(0, 1, &cbPerObjectBuffer);
-		d3d11DevCon->PSSetConstantBuffers(1, 1, &cbPerObjectBuffer);
-		if (material[meshSubsetTexture[i]].hasTexture)
-			d3d11DevCon->PSSetShaderResources(0, 1, &meshSRV[material[meshSubsetTexture[i]].texArrayIndex]);
-		if (material[meshSubsetTexture[i]].hasNormMap)
-			d3d11DevCon->PSSetShaderResources(1, 1, &meshSRV[material[meshSubsetTexture[i]].normMapTexArrayIndex]);
-		d3d11DevCon->PSSetSamplers(0, 1, &CubesTexSamplerState);
+	//	//Set the WVP matrix and send it to the constant buffer in effect file
+	//	WVP = meshWorld * camView * camProjection;
+	//	cbPerObj.WVP = XMMatrixTranspose(WVP);
+	//	cbPerObj.World = XMMatrixTranspose(meshWorld);
+	//	cbPerObj.difColor = material[meshSubsetTexture[i]].difColor;
+	//	cbPerObj.hasTexture = material[meshSubsetTexture[i]].hasTexture;
+	//	cbPerObj.hasNormMap = material[meshSubsetTexture[i]].hasNormMap;
+	//	d3d11DevCon->UpdateSubresource(cbPerObjectBuffer, 0, NULL, &cbPerObj, 0, 0);
+	//	d3d11DevCon->VSSetConstantBuffers(0, 1, &cbPerObjectBuffer);
+	//	d3d11DevCon->PSSetConstantBuffers(1, 1, &cbPerObjectBuffer);
+	//	if (material[meshSubsetTexture[i]].hasTexture)
+	//		d3d11DevCon->PSSetShaderResources(0, 1, &meshSRV[material[meshSubsetTexture[i]].texArrayIndex]);
+	//	if (material[meshSubsetTexture[i]].hasNormMap)
+	//		d3d11DevCon->PSSetShaderResources(1, 1, &meshSRV[material[meshSubsetTexture[i]].normMapTexArrayIndex]);
+	//	d3d11DevCon->PSSetSamplers(0, 1, &CubesTexSamplerState);
 
-		d3d11DevCon->RSSetState(RSCullNone);
-		int indexStart = meshSubsetIndexStart[i];
-		int indexDrawAmount = meshSubsetIndexStart[i + 1] - meshSubsetIndexStart[i];
-		if (!material[meshSubsetTexture[i]].transparent)
-			d3d11DevCon->DrawIndexed(indexDrawAmount, indexStart, 0);
-	}
+	//	d3d11DevCon->RSSetState(RSCullNone);
+	//	int indexStart = meshSubsetIndexStart[i];
+	//	int indexDrawAmount = meshSubsetIndexStart[i + 1] - meshSubsetIndexStart[i];
+	//	if (!material[meshSubsetTexture[i]].transparent)
+	//		d3d11DevCon->DrawIndexed(indexDrawAmount, indexStart, 0);
+	//}
 }
