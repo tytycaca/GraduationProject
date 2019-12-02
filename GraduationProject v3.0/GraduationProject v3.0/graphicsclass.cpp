@@ -32,6 +32,9 @@ GraphicsClass::GraphicsClass()
 
 	isLClicked = false;
 	isRClicked = false;
+
+	charPos = D3DXVECTOR3(0.0f, 30.0f, -100.0f);
+	charRot = D3DXVECTOR3(20.0f, 0.0f, 0.0f);
 }
 
 
@@ -95,7 +98,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 30.0f, -100.0f);
+	m_Camera->SetPosition(0.0f, 50.0f, -100.0f);
 	m_Camera->Render();
 	m_Camera->GetViewMatrix(baseViewMatrix);
 
@@ -499,9 +502,23 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	/////////
 
 	D3DXMATRIX md5World;
+	D3DXMATRIX inverseMat;
+	D3DXVECTOR3 trans;
 	m_D3D->GetWorldMatrix(md5World);
-	D3DXMATRIX meshWorld;
-	m_D3D->GetWorldMatrix(meshWorld);
+	D3DXVec3Scale
+	(
+		&trans,
+		&D3DXVECTOR3
+		(
+			m_Camera->GetLookAtVector().x * 20.0f,
+			m_Camera->GetLookAtVector().y * 20.0f,
+			m_Camera->GetLookAtVector().z * 20.0f
+		),
+		1.0f
+	);
+	D3DXMatrixRotationY(&md5World, charRot.y + 180.0f);
+	D3DXMatrixTranslation(&translateMatrix, m_Camera->GetPosition().x - trans.x - 5.0f, m_Camera->GetPosition().y - trans.y - 30.0f, m_Camera->GetPosition().z - trans.z - 2.0f);
+	D3DXMatrixMultiply(&md5World, &md5World, &translateMatrix);
 
 	m_Md5Model->DrawMd5Model
 	(
@@ -512,13 +529,6 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 			md5World._21, md5World._22, md5World._23, md5World._24,
 			md5World._31, md5World._32, md5World._33, md5World._34,
 			md5World._41, md5World._42, md5World._43, md5World._44
-		),
-		XMMATRIX
-		(
-			meshWorld._11, meshWorld._12, meshWorld._13, meshWorld._14,
-			meshWorld._21, meshWorld._22, meshWorld._23, meshWorld._24,
-			meshWorld._31, meshWorld._32, meshWorld._33, meshWorld._34,
-			meshWorld._41, meshWorld._42, meshWorld._43, meshWorld._44
 		),
 		XMMATRIX
 		(
@@ -930,20 +940,35 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	return true;
 }
 
-void GraphicsClass::MoveCamera(int key)
+void GraphicsClass::MoveCameraAndChar(int key)
 {
-	if (key == DIK_W) m_Camera->FrontWalk(1.0f);
-	if (key == DIK_S) m_Camera->FrontWalk(-1.0f);
+	if (key == DIK_W)
+	{
+		m_Camera->FrontWalk(1.0f);
+		//charPos = m_Camera->GetPosition();
+	}
+	if (key == DIK_S)
+	{
+		m_Camera->FrontWalk(-1.0f);
+		//charPos = m_Camera->GetPosition();
+	}
 
-	if (key == DIK_A) m_Camera->SideWalk(1.0f);
-	if (key == DIK_D) m_Camera->SideWalk(-1.0f);
+	if (key == DIK_A)
+	{
+		m_Camera->SideWalk(1.0f);
+		//charPos = m_Camera->GetPosition();
+	}
+	if (key == DIK_D)
+	{
+		m_Camera->SideWalk(-1.0f);
+		//charPos = m_Camera->GetPosition();
+	}
 }
 
-void GraphicsClass::RotateCamera(float x, float y, float z)
+void GraphicsClass::RotateCameraAndChar(float x, float y, float z)
 {
-
 	m_Camera->SetRotation(x, y, z);
-
+	charRot = m_Camera->GetRotation() * 0.0174532925f;
 }
 
 void GraphicsClass::MovePad(int key, float frametime)

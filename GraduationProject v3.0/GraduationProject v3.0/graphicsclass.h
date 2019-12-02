@@ -49,8 +49,8 @@ public:
 	void Shutdown();
 	bool Frame(int, int, int, int, int, int, float, DIMOUSESTATE);
 
-	void MoveCamera(int);
-	void RotateCamera(float, float, float);
+	void MoveCameraAndChar(int);
+	void RotateCameraAndChar(float, float, float);
 	void MovePad(int, float);
 	void MovePadAI(float);
 
@@ -90,6 +90,9 @@ private:
 	bool checkFirst;
 
 	bool isLClicked, isRClicked;
+
+	D3DXVECTOR3 charPos;
+	D3DXVECTOR3 charRot;
 };
 
 #endif

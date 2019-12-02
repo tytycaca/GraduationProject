@@ -1024,7 +1024,7 @@ void Md5ModelClass::UpdateMD5Model(float deltaTime, int animation, ID3D11DeviceC
 }
 
 
-void Md5ModelClass::DrawMd5Model(ID3D11DeviceContext* d3d11DevCon, XMMATRIX md5World, XMMATRIX meshWorld, XMMATRIX camView, XMMATRIX camProjection)
+void Md5ModelClass::DrawMd5Model(ID3D11DeviceContext* d3d11DevCon, XMMATRIX md5World, XMMATRIX camView, XMMATRIX camProjection)
 {
 	//Clear our render target and depth/stencil view
 	/*float bgColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };

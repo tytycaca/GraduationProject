@@ -214,7 +214,7 @@ public:
 
 	void UpdateMD5Model(float deltaTime, int animation, ID3D11DeviceContext*);
 
-	void DrawMd5Model(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, XMMATRIX);
+	void DrawMd5Model(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX);
 
 
 private:
