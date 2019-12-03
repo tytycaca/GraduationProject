@@ -502,8 +502,10 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	/////////
 
 	D3DXMATRIX md5World;
-	D3DXMATRIX inverseMat;
+	//D3DXMATRIX inverseMat;
 	D3DXVECTOR3 trans;
+	XMFLOAT4X4 convertMat;
+	XMMATRIX inputWorld, inputView, inputProj;
 	m_D3D->GetWorldMatrix(md5World);
 	D3DXVec3Scale
 	(
@@ -520,31 +522,35 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	D3DXMatrixTranslation(&translateMatrix, m_Camera->GetPosition().x - trans.x - 5.0f, m_Camera->GetPosition().y - trans.y - 30.0f, m_Camera->GetPosition().z - trans.z - 2.0f);
 	D3DXMatrixMultiply(&md5World, &md5World, &translateMatrix);
 
-	m_Md5Model->DrawMd5Model
-	(
-		m_D3D->GetDeviceContext(),
-		XMMATRIX
-		(
-			md5World._11, md5World._12, md5World._13, md5World._14,
-			md5World._21, md5World._22, md5World._23, md5World._24,
-			md5World._31, md5World._32, md5World._33, md5World._34,
-			md5World._41, md5World._42, md5World._43, md5World._44
-		),
-		XMMATRIX
-		(
-			viewMatrix._11, viewMatrix._12, viewMatrix._13, viewMatrix._14,
-			viewMatrix._21, viewMatrix._22, viewMatrix._23, viewMatrix._24,
-			viewMatrix._31, viewMatrix._32, viewMatrix._33, viewMatrix._34,
-			viewMatrix._41, viewMatrix._42, viewMatrix._43, viewMatrix._44
-		),
-		XMMATRIX
-		(
-			projectionMatrix._11, projectionMatrix._12, projectionMatrix._13, projectionMatrix._14,
-			projectionMatrix._21, projectionMatrix._22, projectionMatrix._23, projectionMatrix._24,
-			projectionMatrix._31, projectionMatrix._32, projectionMatrix._33, projectionMatrix._34,
-			projectionMatrix._41, projectionMatrix._42, projectionMatrix._43, projectionMatrix._44
-		)
-	);
+	convertMat =
+		XMFLOAT4X4
+	{
+		md5World._11, md5World._12, md5World._13, md5World._14,
+		md5World._21, md5World._22, md5World._23, md5World._24,
+		md5World._31, md5World._32, md5World._33, md5World._34,
+		md5World._41, md5World._42, md5World._43, md5World._44
+	};
+	inputWorld = XMLoadFloat4x4(&convertMat);
+	convertMat =
+		XMFLOAT4X4
+	{
+		viewMatrix._11, viewMatrix._12, viewMatrix._13, viewMatrix._14,
+		viewMatrix._21, viewMatrix._22, viewMatrix._23, viewMatrix._24,
+		viewMatrix._31, viewMatrix._32, viewMatrix._33, viewMatrix._34,
+		viewMatrix._41, viewMatrix._42, viewMatrix._43, viewMatrix._44
+	};
+	inputView = XMLoadFloat4x4(&convertMat);
+	convertMat =
+		XMFLOAT4X4
+	{
+		projectionMatrix._11, projectionMatrix._12, projectionMatrix._13, projectionMatrix._14,
+		projectionMatrix._21, projectionMatrix._22, projectionMatrix._23, projectionMatrix._24,
+		projectionMatrix._31, projectionMatrix._32, projectionMatrix._33, projectionMatrix._34,
+		projectionMatrix._41, projectionMatrix._42, projectionMatrix._43, projectionMatrix._44
+	};
+	inputProj = XMLoadFloat4x4(&convertMat);
+
+	m_Md5Model->DrawMd5Model(m_D3D->GetDeviceContext(), inputWorld, inputView, inputProj);
 
 
 	///////////////////////
