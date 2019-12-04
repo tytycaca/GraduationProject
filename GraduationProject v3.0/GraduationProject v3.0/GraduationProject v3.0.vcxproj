@@ -46,6 +46,7 @@
     <Image Include="Texture\Tex_Hat_Shizuoka.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bitmapclass.cpp" />
     <ClCompile Include="bumpmapshaderclass.cpp" />
     <ClCompile Include="bumpmodelclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
@@ -78,6 +79,7 @@
     <ClCompile Include="timerclass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bitmapclass.h" />
     <ClInclude Include="bumpmapshaderclass.h" />
     <ClInclude Include="bumpmodelclass.h" />
     <ClInclude Include="cameraclass.h" />

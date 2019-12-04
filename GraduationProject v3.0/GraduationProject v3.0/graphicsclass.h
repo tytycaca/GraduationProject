@@ -25,6 +25,8 @@
 #include "raycastingclass.h"
 #include "md5modelclass.h"
 
+#include "bitmapclass.h"
+
 
 /////////////
 // GLOBALS //
@@ -91,8 +93,11 @@ private:
 
 	bool isLClicked, isRClicked;
 
-	D3DXVECTOR3 charPos;
-	D3DXVECTOR3 charRot;
+	D3DXVECTOR3 m_charPos;
+	D3DXVECTOR3 m_charRot;
+	
+//public:
+//	float m_oldCamRot;
 };
 
 #endif

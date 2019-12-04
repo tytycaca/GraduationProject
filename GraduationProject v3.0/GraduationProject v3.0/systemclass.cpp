@@ -249,24 +249,28 @@ bool SystemClass::Frame()
 		return false;
 	}
 
-	if (m_Input->IsKeyPressed(DIK_W))
+	if(
+		m_Input->IsKeyPressed(DIK_W) || m_Input->IsKeyPressed(DIK_S) ||
+		m_Input->IsKeyPressed(DIK_A) || m_Input->IsKeyPressed(DIK_D)
+		)
 	{
-		m_Graphics->MoveCameraAndChar(DIK_W);
-		m_Graphics->AnimChar(m_Timer->GetTime());
-	}
-	if (m_Input->IsKeyPressed(DIK_S))
-	{
-		m_Graphics->MoveCameraAndChar(DIK_S);
-		m_Graphics->AnimChar(m_Timer->GetTime());
-	}
-	if (m_Input->IsKeyPressed(DIK_A))
-	{
-		m_Graphics->MoveCameraAndChar(DIK_A);
-		m_Graphics->AnimChar(m_Timer->GetTime());
-	}
-	if (m_Input->IsKeyPressed(DIK_D))
-	{
-		m_Graphics->MoveCameraAndChar(DIK_D);
+		if (m_Input->IsKeyPressed(DIK_W))
+		{
+			m_Graphics->MoveCameraAndChar(DIK_W);
+		}
+		if (m_Input->IsKeyPressed(DIK_S))
+		{
+			m_Graphics->MoveCameraAndChar(DIK_S);
+		}
+		if (m_Input->IsKeyPressed(DIK_A))
+		{
+			m_Graphics->MoveCameraAndChar(DIK_A);
+		}
+		if (m_Input->IsKeyPressed(DIK_D))
+		{
+			m_Graphics->MoveCameraAndChar(DIK_D);
+		}
+
 		m_Graphics->AnimChar(m_Timer->GetTime());
 	}
 
@@ -277,6 +281,7 @@ bool SystemClass::Frame()
 
 	m_Input->GetMouseState(mouseState);
 	m_Graphics->RotateCameraAndChar(mouseState.lY / 20.0f, mouseState.lX / 20.0f, mouseState.lZ / 20.0f);
+	//m_Graphics->m_oldCamRot = mouseState.lX / 20.0f;
 
 	// Do the frame processing for the graphics object.
 	result = m_Graphics->Frame(m_Fps->GetFps(), m_Cpu->GetCpuPercentage(), m_Obj->GetCntObject(), m_Poly->GetCntPolygon(),

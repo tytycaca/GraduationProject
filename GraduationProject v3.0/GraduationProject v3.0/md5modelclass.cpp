@@ -161,7 +161,7 @@ void Md5ModelClass::InitializeMd5Shader
 
 	hr = d3d11Device->CreateRasterizerState(&cmdesc, &CWcullMode);
 
-	cmdesc.CullMode = D3D11_CULL_NONE;
+	//cmdesc.CullMode = D3D11_CULL_NONE;
 	//cmdesc.FillMode = D3D11_FILL_WIREFRAME;
 	hr = d3d11Device->CreateRasterizerState(&cmdesc, &RSCullNone);
 

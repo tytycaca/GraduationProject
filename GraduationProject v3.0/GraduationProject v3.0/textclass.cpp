@@ -12,7 +12,7 @@ TextClass::TextClass()
 	//m_sentence1 = 0;
 	//m_sentence2 = 0;
 
-	for (int i = 0; i < 8; i++) m_sentence[i] = 0;
+	for (int i = 0; i < TEXTNUM; i++) m_sentence[i] = 0;
 }
 
 
@@ -97,7 +97,7 @@ bool TextClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCont
 	//	return false;
 	//}
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < TEXTNUM; i++)
 	{
 		result = InitializeSentence(&m_sentence[i], 32, device);
 		if (!result) return false;
@@ -118,7 +118,7 @@ void TextClass::Shutdown()
 	//// Release the second sentence.
 	//ReleaseSentence(&m_sentence2);
 
-	for (int i = 0; i < 8; i++) ReleaseSentence(&m_sentence[i]);
+	for (int i = 0; i < TEXTNUM; i++) ReleaseSentence(&m_sentence[i]);
 
 	// Release the font shader object.
 	if (m_FontShader)
@@ -159,7 +159,7 @@ bool TextClass::Render(ID3D11DeviceContext* deviceContext, D3DXMATRIX worldMatri
 	//	return false;
 	//}
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < TEXTNUM; i++)
 	{
 		result = RenderSentence(deviceContext, m_sentence[i], worldMatrix, orthoMatrix);
 		if (!result)
