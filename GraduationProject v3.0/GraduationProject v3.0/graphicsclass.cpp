@@ -506,8 +506,8 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	//D3DXMATRIX rotationMatrix;
 	//D3DXMATRIX inverseMat;
 	D3DXVECTOR3 trans;
-	XMFLOAT4X4 convertMat;
-	XMMATRIX inputWorld, inputView, inputProj;
+	//XMFLOAT4X4 convertMat;
+	//D3DXMATRIX inputWorld, inputView, inputProj;
 	//float camCharDistance;
 
 	m_D3D->GetWorldMatrix(md5World);
@@ -539,37 +539,37 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 		);
 	m_oldCamRot = m_Camera->GetRotation().y;*/
 
-	convertMat = XMFLOAT4X4(md5World);
-	/*	XMFLOAT4X4
+	/*convertMat = XMFLOAT4X4(md5World);
+		XMFLOAT4X4
 	{
 		md5World._11, md5World._12, md5World._13, md5World._14,
 		md5World._21, md5World._22, md5World._23, md5World._24,
 		md5World._31, md5World._32, md5World._33, md5World._34,
 		md5World._41, md5World._42, md5World._43, md5World._44
-	};*/
+	};
 	inputWorld = XMLoadFloat4x4(&convertMat);
 
 	convertMat = XMFLOAT4X4(viewMatrix);
-	/*	XMFLOAT4X4
+		XMFLOAT4X4
 	{
 		viewMatrix._11, viewMatrix._12, viewMatrix._13, viewMatrix._14,
 		viewMatrix._21, viewMatrix._22, viewMatrix._23, viewMatrix._24,
 		viewMatrix._31, viewMatrix._32, viewMatrix._33, viewMatrix._34,
 		viewMatrix._41, viewMatrix._42, viewMatrix._43, viewMatrix._44
-	};*/
+	};
 	inputView = XMLoadFloat4x4(&convertMat);
 
 	convertMat = XMFLOAT4X4(projectionMatrix);
-	/*	XMFLOAT4X4
+		XMFLOAT4X4
 	{
 		projectionMatrix._11, projectionMatrix._12, projectionMatrix._13, projectionMatrix._14,
 		projectionMatrix._21, projectionMatrix._22, projectionMatrix._23, projectionMatrix._24,
 		projectionMatrix._31, projectionMatrix._32, projectionMatrix._33, projectionMatrix._34,
 		projectionMatrix._41, projectionMatrix._42, projectionMatrix._43, projectionMatrix._44
-	};*/
-	inputProj = XMLoadFloat4x4(&convertMat);
+	};
+	inputProj = XMLoadFloat4x4(&convertMat);*/
 
-	m_Md5Model->DrawMd5Model(m_D3D->GetDeviceContext(), inputWorld, inputView, inputProj);
+	m_Md5Model->DrawMd5Model(m_D3D->GetDeviceContext(), md5World, viewMatrix, projectionMatrix);
 
 
 	///////////////////////

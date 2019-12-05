@@ -32,9 +32,9 @@ private:
 	{
 		int jointID;
 		float bias;
-		XMFLOAT3 pos;
+		D3DXVECTOR3 pos;
 		///////////////**************new**************////////////////////
-		XMFLOAT3 normal;
+		D3DXVECTOR3 normal;
 		///////////////**************new**************////////////////////
 	};
 
@@ -48,11 +48,11 @@ private:
 			: pos(x, y, z), texCoord(u, v), normal(nx, ny, nz),
 			tangent(tx, ty, tz) {}
 
-		XMFLOAT3 pos;
-		XMFLOAT2 texCoord;
-		XMFLOAT3 normal;
-		XMFLOAT3 tangent;
-		XMFLOAT3 biTangent;
+		D3DXVECTOR3 pos;
+		D3DXVECTOR2 texCoord;
+		D3DXVECTOR3 normal;
+		D3DXVECTOR3 tangent;
+		D3DXVECTOR3 biTangent;
 
 		// Will not be sent to shader
 		int StartWeight;
@@ -65,11 +65,11 @@ private:
 		int numTriangles;
 
 		std::vector<Vertex> vertices;
-		std::vector<XMFLOAT3> jointSpaceNormals;
+		std::vector<D3DXVECTOR3> jointSpaceNormals;
 		std::vector<DWORD> indices;
 		std::vector<Weight> weights;
 
-		std::vector<XMFLOAT3> positions;
+		std::vector<D3DXVECTOR3> positions;
 
 		ID3D11Buffer* vertBuff;
 		ID3D11Buffer* indexBuff;
@@ -80,8 +80,8 @@ private:
 		std::wstring name;
 		int parentID;
 
-		XMFLOAT3 pos;
-		XMFLOAT4 orientation;
+		D3DXVECTOR3 pos;
+		D3DXQUATERNION orientation;
 	};
 
 	struct AnimJointInfo
@@ -95,8 +95,8 @@ private:
 
 	struct BoundingBox
 	{
-		XMFLOAT3 min;
-		XMFLOAT3 max;
+		D3DXVECTOR3 min;
+		D3DXVECTOR3 max;
 	};
 
 	struct FrameData
@@ -142,14 +142,14 @@ private:
 		{
 			ZeroMemory(this, sizeof(Light));
 		}
-		XMFLOAT3 pos;
+		D3DXVECTOR3 pos;
 		float range;
-		XMFLOAT3 dir;
+		D3DXVECTOR3 dir;
 		float cone;
-		XMFLOAT3 att;
+		D3DXVECTOR3 att;
 		float pad2;
-		XMFLOAT4 ambient;
-		XMFLOAT4 diffuse;
+		D3DXQUATERNION ambient;
+		D3DXQUATERNION diffuse;
 	};
 
 	D3D11_INPUT_ELEMENT_DESC layout[4] =
@@ -167,7 +167,7 @@ private:
 		XMMATRIX World;
 
 		//These will be used for the pixel shader
-		XMFLOAT4 difColor;
+		D3DXQUATERNION difColor;
 		BOOL hasTexture;
 		//Because of HLSL structure packing, we will use windows BOOL
 		//instead of bool because HLSL packs things into 4 bytes, and
@@ -183,7 +183,7 @@ private:
 	struct SurfaceMaterial
 	{
 		std::wstring matName;
-		XMFLOAT4 difColor;
+		D3DXQUATERNION difColor;
 		int texArrayIndex;
 		int normMapTexArrayIndex;
 		bool hasNormMap;
@@ -214,7 +214,7 @@ public:
 
 	void UpdateMD5Model(float deltaTime, int animation, ID3D11DeviceContext*);
 
-	void DrawMd5Model(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX);
+	void DrawMd5Model(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX);
 
 
 private:
@@ -255,10 +255,13 @@ private:
 	std::vector<int> meshSubsetIndexStart;
 	std::vector<int> meshSubsetTexture;
 
-	XMVECTOR camPosition;
-	XMVECTOR camTarget;
-	XMVECTOR camUp;
-	XMMATRIX WVP;
-	XMMATRIX camView;
-	XMMATRIX camProjection;
+	D3DXQUATERNION camPosition;
+	D3DXQUATERNION camTarget;
+	D3DXQUATERNION camUp;
+	D3DXMATRIX WVP;
+	D3DXMATRIX camView;
+	D3DXMATRIX camProjection;
+	D3DXQUATERNION tmpQuater;
+	D3DXMATRIX tmpMat;
+	D3DXVECTOR3 tmpVec3;
 };

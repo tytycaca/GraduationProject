@@ -44,13 +44,13 @@ void Md5ModelClass::InitializeMd5Shader
 	d3d11DevCon->VSSetShader(VS, 0, 0);
 	d3d11DevCon->PSSetShader(PS, 0, 0);
 
-	light.pos = XMFLOAT3(0.0f, 7.0f, 0.0f);
-	light.dir = XMFLOAT3(-0.5f, 0.75f, -0.5f);
+	light.pos = D3DXVECTOR3(0.0f, 7.0f, 0.0f);
+	light.dir = D3DXVECTOR3(-0.5f, 0.75f, -0.5f);
 	light.range = 1000.0f;
 	light.cone = 12.0f;
-	light.att = XMFLOAT3(0.4f, 0.02f, 0.000f);
-	light.ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-	light.diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	light.att = D3DXVECTOR3(0.4f, 0.02f, 0.000f);
+	light.ambient = D3DXQUATERNION(0.2f, 0.2f, 0.2f, 1.0f);
+	light.diffuse = D3DXQUATERNION(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//Create the Input Layout
 	hr = d3d11Device->CreateInputLayout(layout, numElements, VS_Buffer->GetBufferPointer(),
@@ -448,7 +448,7 @@ bool Md5ModelClass::LoadMD5Model
 				for (int i = 0; i < subset.vertices.size(); ++i)
 				{
 					Vertex tempVert = subset.vertices[i];
-					tempVert.pos = XMFLOAT3(0, 0, 0);	// Make sure the vertex's pos is cleared first
+					tempVert.pos = D3DXVECTOR3(0, 0, 0);	// Make sure the vertex's pos is cleared first
 
 					// Sum up the joints and weights information to get vertex's position
 					for (int j = 0; j < tempVert.WeightCount; ++j)
@@ -459,17 +459,26 @@ bool Md5ModelClass::LoadMD5Model
 						// Convert joint orientation and weight pos to vectors for easier computation
 						// When converting a 3d vector to a quaternion, you should put 0 for "w", and
 						// When converting a quaternion to a 3d vector, you can just ignore the "w"
-						XMVECTOR tempJointOrientation = XMVectorSet(tempJoint.orientation.x, tempJoint.orientation.y, tempJoint.orientation.z, tempJoint.orientation.w);
-						XMVECTOR tempWeightPos = XMVectorSet(tempWeight.pos.x, tempWeight.pos.y, tempWeight.pos.z, 0.0f);
+						D3DXQUATERNION tempJointOrientation = D3DXQUATERNION(tempJoint.orientation.x, tempJoint.orientation.y, tempJoint.orientation.z, tempJoint.orientation.w);
+						D3DXQUATERNION tempWeightPos = D3DXQUATERNION(tempWeight.pos.x, tempWeight.pos.y, tempWeight.pos.z, 0.0f);
 
 						// We will need to use the conjugate of the joint orientation quaternion
 						// To get the conjugate of a quaternion, all you have to do is inverse the x, y, and z
-						XMVECTOR tempJointOrientationConjugate = XMVectorSet(-tempJoint.orientation.x, -tempJoint.orientation.y, -tempJoint.orientation.z, tempJoint.orientation.w);
+						D3DXQUATERNION tempJointOrientationConjugate = D3DXQUATERNION(-tempJoint.orientation.x, -tempJoint.orientation.y, -tempJoint.orientation.z, tempJoint.orientation.w);
 
 						// Calculate vertex position (in joint space, eg. rotate the point around (0,0,0)) for this weight using the joint orientation quaternion and its conjugate
 						// We can rotate a point using a quaternion with the equation "rotatedPoint = quaternion * point * quaternionConjugate"
-						XMFLOAT3 rotatedPoint;
-						XMStoreFloat3(&rotatedPoint, XMQuaternionMultiply(XMQuaternionMultiply(tempJointOrientation, tempWeightPos), tempJointOrientationConjugate));
+						D3DXVECTOR3 rotatedPoint;
+						D3DXQUATERNION result;
+						D3DXQuaternionMultiply
+						(
+							&result,
+							D3DXQuaternionMultiply(&tmpQuater, &tempJointOrientation, &tempWeightPos),
+							&tempJointOrientationConjugate
+						);
+						rotatedPoint.x = result.x;
+						rotatedPoint.y = result.y;
+						rotatedPoint.z = result.z;
 
 						// Now move the verices position from joint space (0,0,0) to the joints position in world space, taking the weights bias into account
 						// The weight bias is used because multiple weights might have an effect on the vertices final position. Each weight is attached to one joint.
@@ -498,17 +507,17 @@ bool Md5ModelClass::LoadMD5Model
 				}
 
 				//*** Calculate vertex normals using normal averaging ***///
-				std::vector<XMFLOAT3> tempNormal;
+				std::vector<D3DXVECTOR3> tempNormal;
 
 				//normalized and unnormalized normals
-				XMFLOAT3 unnormalized = XMFLOAT3(0.0f, 0.0f, 0.0f);
+				D3DXVECTOR3 unnormalized = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 				//Used to get vectors (sides) from the position of the verts
 				float vecX, vecY, vecZ;
 
 				//Two edges of our triangle
-				XMVECTOR edge1 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-				XMVECTOR edge2 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+				D3DXQUATERNION edge1 = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f);
+				D3DXQUATERNION edge2 = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f);
 
 				//Compute face normals
 				for (int i = 0; i < subset.numTriangles; ++i)
@@ -517,22 +526,24 @@ bool Md5ModelClass::LoadMD5Model
 					vecX = subset.vertices[subset.indices[(i * 3)]].pos.x - subset.vertices[subset.indices[(i * 3) + 2]].pos.x;
 					vecY = subset.vertices[subset.indices[(i * 3)]].pos.y - subset.vertices[subset.indices[(i * 3) + 2]].pos.y;
 					vecZ = subset.vertices[subset.indices[(i * 3)]].pos.z - subset.vertices[subset.indices[(i * 3) + 2]].pos.z;
-					edge1 = XMVectorSet(vecX, vecY, vecZ, 0.0f);	//Create our first edge
+					edge1 = D3DXQUATERNION(vecX, vecY, vecZ, 0.0f);	//Create our first edge
 
 					//Get the vector describing another edge of our triangle (edge 2,1)
 					vecX = subset.vertices[subset.indices[(i * 3) + 2]].pos.x - subset.vertices[subset.indices[(i * 3) + 1]].pos.x;
 					vecY = subset.vertices[subset.indices[(i * 3) + 2]].pos.y - subset.vertices[subset.indices[(i * 3) + 1]].pos.y;
 					vecZ = subset.vertices[subset.indices[(i * 3) + 2]].pos.z - subset.vertices[subset.indices[(i * 3) + 1]].pos.z;
-					edge2 = XMVectorSet(vecX, vecY, vecZ, 0.0f);	//Create our second edge
+					edge2 = D3DXQUATERNION(vecX, vecY, vecZ, 0.0f);	//Create our second edge
 
 					//Cross multiply the two edge vectors to get the un-normalized face normal
-					XMStoreFloat3(&unnormalized, XMVector3Cross(edge1, edge2));
+					D3DXVECTOR3 vec3Edge1 = D3DXVECTOR3(edge1.x, edge1.y, edge1.z);
+					D3DXVECTOR3 vec3Edge2 = D3DXVECTOR3(edge2.x, edge2.y, edge2.z);
+					unnormalized = *D3DXVec3Cross(&tmpVec3, &vec3Edge1, &vec3Edge2);
 
 					tempNormal.push_back(unnormalized);
 				}
 
 				//Compute vertex normals (normal Averaging)
-				XMVECTOR normalSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+				D3DXQUATERNION normalSum = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f);
 				int facesUsing = 0;
 				float tX, tY, tZ;	//temp axis variables
 
@@ -546,11 +557,11 @@ bool Md5ModelClass::LoadMD5Model
 							subset.indices[(j * 3) + 1] == i ||
 							subset.indices[(j * 3) + 2] == i)
 						{
-							tX = XMVectorGetX(normalSum) + tempNormal[j].x;
-							tY = XMVectorGetY(normalSum) + tempNormal[j].y;
-							tZ = XMVectorGetZ(normalSum) + tempNormal[j].z;
+							tX = normalSum.x + tempNormal[j].x;
+							tY = normalSum.y + tempNormal[j].y;
+							tZ = normalSum.z + tempNormal[j].z;
 
-							normalSum = XMVectorSet(tX, tY, tZ, 0.0f);	//If a face is using the vertex, add the unormalized face normal to the normalSum
+							normalSum = D3DXQUATERNION(tX, tY, tZ, 0.0f);	//If a face is using the vertex, add the unormalized face normal to the normalSum
 
 							facesUsing++;
 						}
@@ -559,33 +570,41 @@ bool Md5ModelClass::LoadMD5Model
 					//Get the actual normal by dividing the normalSum by the number of faces sharing the vertex
 					normalSum = normalSum / facesUsing;
 
+					D3DXVECTOR3 vec3NormalSum = D3DXVECTOR3(normalSum.x, normalSum.y, normalSum.z);
+
 					//Normalize the normalSum vector
-					normalSum = XMVector3Normalize(normalSum);
+					D3DXVECTOR3 resultNormalSum = *D3DXVec3Normalize(&tmpVec3, &vec3NormalSum);
+					normalSum = D3DXQUATERNION(resultNormalSum.x, resultNormalSum.y, resultNormalSum.z, 0.0f);
 
 					//Store the normal and tangent in our current vertex
-					subset.vertices[i].normal.x = -XMVectorGetX(normalSum);
-					subset.vertices[i].normal.y = -XMVectorGetY(normalSum);
-					subset.vertices[i].normal.z = -XMVectorGetZ(normalSum);
+					subset.vertices[i].normal.x = -normalSum.x;
+					subset.vertices[i].normal.y = -normalSum.y;
+					subset.vertices[i].normal.z = -normalSum.z;
 
 					///////////////**************new**************////////////////////
 					// Create the joint space normal for easy normal calculations in animation
 					Vertex tempVert = subset.vertices[i];						// Get the current vertex
-					subset.jointSpaceNormals.push_back(XMFLOAT3(0, 0, 0));		// Push back a blank normal
-					XMVECTOR normal = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);		// Clear normal
+					subset.jointSpaceNormals.push_back(D3DXVECTOR3(0, 0, 0));		// Push back a blank normal
+					D3DXQUATERNION normal = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f);		// Clear normal
 
 					for (int k = 0; k < tempVert.WeightCount; k++)				// Loop through each of the vertices weights
 					{
 						Joint tempJoint = MD5Model.joints[subset.weights[tempVert.StartWeight + k].jointID];	// Get the joints orientation
-						XMVECTOR jointOrientation = XMVectorSet(tempJoint.orientation.x, tempJoint.orientation.y, tempJoint.orientation.z, tempJoint.orientation.w);
+						D3DXQUATERNION jointOrientation = D3DXQUATERNION(tempJoint.orientation.x, tempJoint.orientation.y, tempJoint.orientation.z, tempJoint.orientation.w);
 
 						// Calculate normal based off joints orientation (turn into joint space)
-						normal = XMQuaternionMultiply(XMQuaternionMultiply(XMQuaternionInverse(jointOrientation), normalSum), jointOrientation);
+						normal = *D3DXQuaternionMultiply
+						(
+							&tmpQuater,
+							D3DXQuaternionMultiply(&tmpQuater, D3DXQuaternionInverse(&tmpQuater ,&jointOrientation), &normalSum),
+							&jointOrientation
+						);
 
-						XMStoreFloat3(&subset.weights[tempVert.StartWeight + k].normal, XMVector3Normalize(normal));			// Store the normalized quaternion into our weights normal
+						subset.weights[tempVert.StartWeight + k].normal = *D3DXVec3Normalize(&tmpVec3, &D3DXVECTOR3(normal.x, normal.y, normal.z));			// Store the normalized quaternion into our weights normal
 					}
 					///////////////**************new**************////////////////////
 					//Clear normalSum, facesUsing for next vertex
-					normalSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+					normalSum = D3DXQUATERNION(0.0f, 0.0f, 0.0f, 0.0f);
 					facesUsing = 0;
 				}
 
@@ -846,13 +865,21 @@ bool Md5ModelClass::LoadMD5Anim(std::wstring filename, Model3D& MD5Model)
 						Joint parentJoint = tempSkeleton[tempFrameJoint.parentID];
 
 						// Turn the XMFLOAT3 and 4's into vectors for easier computation
-						XMVECTOR parentJointOrientation = XMVectorSet(parentJoint.orientation.x, parentJoint.orientation.y, parentJoint.orientation.z, parentJoint.orientation.w);
-						XMVECTOR tempJointPos = XMVectorSet(tempFrameJoint.pos.x, tempFrameJoint.pos.y, tempFrameJoint.pos.z, 0.0f);
-						XMVECTOR parentOrientationConjugate = XMVectorSet(-parentJoint.orientation.x, -parentJoint.orientation.y, -parentJoint.orientation.z, parentJoint.orientation.w);
+						D3DXQUATERNION parentJointOrientation = D3DXQUATERNION(parentJoint.orientation.x, parentJoint.orientation.y, parentJoint.orientation.z, parentJoint.orientation.w);
+						D3DXQUATERNION tempJointPos = D3DXQUATERNION(tempFrameJoint.pos.x, tempFrameJoint.pos.y, tempFrameJoint.pos.z, 0.0f);
+						D3DXQUATERNION parentOrientationConjugate = D3DXQUATERNION(-parentJoint.orientation.x, -parentJoint.orientation.y, -parentJoint.orientation.z, parentJoint.orientation.w);
 
 						// Calculate current joints position relative to its parents position
-						XMFLOAT3 rotatedPos;
-						XMStoreFloat3(&rotatedPos, XMQuaternionMultiply(XMQuaternionMultiply(parentJointOrientation, tempJointPos), parentOrientationConjugate));
+						D3DXVECTOR3 rotatedPos;
+						D3DXQUATERNION QuatRotatedPos;
+						QuatRotatedPos =
+							*D3DXQuaternionMultiply
+							(
+								&tmpQuater,
+								D3DXQuaternionMultiply(&tmpQuater, &parentJointOrientation, &tempJointPos),
+								&parentOrientationConjugate
+							);
+						rotatedPos = D3DXVECTOR3(QuatRotatedPos.x, QuatRotatedPos.y, QuatRotatedPos.z);
 
 						// Translate the joint to model space by adding the parent joint's pos to it
 						tempFrameJoint.pos.x = rotatedPos.x + parentJoint.pos.x;
@@ -861,13 +888,13 @@ bool Md5ModelClass::LoadMD5Anim(std::wstring filename, Model3D& MD5Model)
 
 						// Currently the joint is oriented in its parent joints space, we now need to orient it in
 						// model space by multiplying the two orientations together (parentOrientation * childOrientation) <- In that order
-						XMVECTOR tempJointOrient = XMVectorSet(tempFrameJoint.orientation.x, tempFrameJoint.orientation.y, tempFrameJoint.orientation.z, tempFrameJoint.orientation.w);
-						tempJointOrient = XMQuaternionMultiply(parentJointOrientation, tempJointOrient);
+						D3DXQUATERNION tempJointOrient = D3DXQUATERNION(tempFrameJoint.orientation.x, tempFrameJoint.orientation.y, tempFrameJoint.orientation.z, tempFrameJoint.orientation.w);
+						tempJointOrient = *D3DXQuaternionMultiply(&tmpQuater, &parentJointOrientation, &tempJointOrient);
 
 						// Normalize the orienation quaternion
-						tempJointOrient = XMQuaternionNormalize(tempJointOrient);
+						tempJointOrient = *D3DXQuaternionNormalize(&tmpQuater, &tempJointOrient);
 
-						XMStoreFloat4(&tempFrameJoint.orientation, tempJointOrient);
+						tempFrameJoint.orientation = tempJointOrient;
 					}
 
 					// Store the joint into our temporary frame skeleton
@@ -935,8 +962,8 @@ void Md5ModelClass::UpdateMD5Model(float deltaTime, int animation, ID3D11DeviceC
 		tempJoint.parentID = joint0.parentID;											// Set the tempJoints parent id
 
 		// Turn the two quaternions into XMVECTORs for easy computations
-		XMVECTOR joint0Orient = XMVectorSet(joint0.orientation.x, joint0.orientation.y, joint0.orientation.z, joint0.orientation.w);
-		XMVECTOR joint1Orient = XMVectorSet(joint1.orientation.x, joint1.orientation.y, joint1.orientation.z, joint1.orientation.w);
+		D3DXQUATERNION joint0Orient = D3DXQUATERNION(joint0.orientation.x, joint0.orientation.y, joint0.orientation.z, joint0.orientation.w);
+		D3DXQUATERNION joint1Orient = D3DXQUATERNION(joint1.orientation.x, joint1.orientation.y, joint1.orientation.z, joint1.orientation.w);
 
 		// Interpolate positions
 		tempJoint.pos.x = joint0.pos.x + (interpolation * (joint1.pos.x - joint0.pos.x));
@@ -944,7 +971,7 @@ void Md5ModelClass::UpdateMD5Model(float deltaTime, int animation, ID3D11DeviceC
 		tempJoint.pos.z = joint0.pos.z + (interpolation * (joint1.pos.z - joint0.pos.z));
 
 		// Interpolate orientations using spherical interpolation (Slerp)
-		XMStoreFloat4(&tempJoint.orientation, XMQuaternionSlerp(joint0Orient, joint1Orient, interpolation));
+		tempJoint.orientation = *D3DXQuaternionSlerp(&tmpQuater, &joint0Orient, &joint1Orient, interpolation);
 
 		interpolatedSkeleton.push_back(tempJoint);		// Push the joint back into our interpolated skeleton
 	}
@@ -954,8 +981,8 @@ void Md5ModelClass::UpdateMD5Model(float deltaTime, int animation, ID3D11DeviceC
 		for (int i = 0; i < MD5Model.subsets[k].vertices.size(); ++i)
 		{
 			Vertex tempVert = MD5Model.subsets[k].vertices[i];
-			tempVert.pos = XMFLOAT3(0, 0, 0);	// Make sure the vertex's pos is cleared first
-			tempVert.normal = XMFLOAT3(0, 0, 0);	// Clear vertices normal
+			tempVert.pos = D3DXVECTOR3(0, 0, 0);	// Make sure the vertex's pos is cleared first
+			tempVert.normal = D3DXVECTOR3(0, 0, 0);	// Clear vertices normal
 
 			// Sum up the joints and weights information to get vertex's position and normal
 			for (int j = 0; j < tempVert.WeightCount; ++j)
@@ -964,16 +991,24 @@ void Md5ModelClass::UpdateMD5Model(float deltaTime, int animation, ID3D11DeviceC
 				Joint tempJoint = interpolatedSkeleton[tempWeight.jointID];
 
 				// Convert joint orientation and weight pos to vectors for easier computation
-				XMVECTOR tempJointOrientation = XMVectorSet(tempJoint.orientation.x, tempJoint.orientation.y, tempJoint.orientation.z, tempJoint.orientation.w);
-				XMVECTOR tempWeightPos = XMVectorSet(tempWeight.pos.x, tempWeight.pos.y, tempWeight.pos.z, 0.0f);
+				D3DXQUATERNION tempJointOrientation = D3DXQUATERNION(tempJoint.orientation.x, tempJoint.orientation.y, tempJoint.orientation.z, tempJoint.orientation.w);
+				D3DXQUATERNION tempWeightPos = D3DXQUATERNION(tempWeight.pos.x, tempWeight.pos.y, tempWeight.pos.z, 0.0f);
 
 				// We will need to use the conjugate of the joint orientation quaternion
-				XMVECTOR tempJointOrientationConjugate = XMQuaternionInverse(tempJointOrientation);
+				D3DXQUATERNION tempJointOrientationConjugate = *D3DXQuaternionInverse(&tmpQuater, &tempJointOrientation);
 
 				// Calculate vertex position (in joint space, eg. rotate the point around (0,0,0)) for this weight using the joint orientation quaternion and its conjugate
 				// We can rotate a point using a quaternion with the equation "rotatedPoint = quaternion * point * quaternionConjugate"
-				XMFLOAT3 rotatedPoint;
-				XMStoreFloat3(&rotatedPoint, XMQuaternionMultiply(XMQuaternionMultiply(tempJointOrientation, tempWeightPos), tempJointOrientationConjugate));
+				D3DXVECTOR3 rotatedPoint;
+				D3DXQUATERNION quatRotatedPoint;
+				quatRotatedPoint =
+					*D3DXQuaternionMultiply
+					(
+						&tmpQuater,
+						D3DXQuaternionMultiply(&tmpQuater, &tempJointOrientation, &tempWeightPos),
+						&tempJointOrientationConjugate
+					);
+					rotatedPoint = D3DXVECTOR3(quatRotatedPoint.x, quatRotatedPoint.y, quatRotatedPoint.z);
 
 				// Now move the verices position from joint space (0,0,0) to the joints position in world space, taking the weights bias into account
 				tempVert.pos.x += (tempJoint.pos.x + rotatedPoint.x) * tempWeight.bias;
@@ -982,10 +1017,17 @@ void Md5ModelClass::UpdateMD5Model(float deltaTime, int animation, ID3D11DeviceC
 
 				// Compute the normals for this frames skeleton using the weight normals from before
 				// We can comput the normals the same way we compute the vertices position, only we don't have to translate them (just rotate)
-				XMVECTOR tempWeightNormal = XMVectorSet(tempWeight.normal.x, tempWeight.normal.y, tempWeight.normal.z, 0.0f);
+				D3DXQUATERNION tempWeightNormal = D3DXQUATERNION(tempWeight.normal.x, tempWeight.normal.y, tempWeight.normal.z, 0.0f);
 
 				// Rotate the normal
-				XMStoreFloat3(&rotatedPoint, XMQuaternionMultiply(XMQuaternionMultiply(tempJointOrientation, tempWeightNormal), tempJointOrientationConjugate));
+				quatRotatedPoint =
+					*D3DXQuaternionMultiply
+					(
+						&tmpQuater,
+						D3DXQuaternionMultiply(&tmpQuater, &tempJointOrientation, &tempWeightNormal),
+						&tempJointOrientationConjugate
+					);
+				rotatedPoint = D3DXVECTOR3(quatRotatedPoint.x, quatRotatedPoint.y, quatRotatedPoint.z);
 
 				// Add to vertices normal and ake weight bias into account
 				tempVert.normal.x -= rotatedPoint.x * tempWeight.bias;
@@ -995,7 +1037,17 @@ void Md5ModelClass::UpdateMD5Model(float deltaTime, int animation, ID3D11DeviceC
 
 			MD5Model.subsets[k].positions[i] = tempVert.pos;				// Store the vertices position in the position vector instead of straight into the vertex vector
 			MD5Model.subsets[k].vertices[i].normal = tempVert.normal;		// Store the vertices normal
-			XMStoreFloat3(&MD5Model.subsets[k].vertices[i].normal, XMVector3Normalize(XMLoadFloat3(&MD5Model.subsets[k].vertices[i].normal)));
+			MD5Model.subsets[k].vertices[i].normal = 
+				*D3DXVec3Normalize
+				(
+					&tmpVec3,
+					&D3DXVECTOR3
+					(
+						MD5Model.subsets[k].vertices[i].normal.x,
+						MD5Model.subsets[k].vertices[i].normal.y,
+						MD5Model.subsets[k].vertices[i].normal.z
+					)
+				);
 		}
 
 		// Put the positions into the vertices for this subset
@@ -1024,7 +1076,7 @@ void Md5ModelClass::UpdateMD5Model(float deltaTime, int animation, ID3D11DeviceC
 }
 
 
-void Md5ModelClass::DrawMd5Model(ID3D11DeviceContext* d3d11DevCon, XMMATRIX md5World, XMMATRIX camView, XMMATRIX camProjection)
+void Md5ModelClass::DrawMd5Model(ID3D11DeviceContext* d3d11DevCon, D3DXMATRIX md5World, D3DXMATRIX camView, D3DXMATRIX camProjection)
 {
 	//Clear our render target and depth/stencil view
 	/*float bgColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
@@ -1058,8 +1110,8 @@ void Md5ModelClass::DrawMd5Model(ID3D11DeviceContext* d3d11DevCon, XMMATRIX md5W
 
 		//Set the WVP matrix and send it to the constant buffer in effect file
 		WVP = md5World * camView * camProjection;
-		cbPerObj.WVP = XMMatrixTranspose(WVP);
-		cbPerObj.World = XMMatrixTranspose(md5World);
+		cbPerObj.WVP = XMLoadFloat4x4(&XMFLOAT4X4(*D3DXMatrixTranspose(&tmpMat, &WVP)));
+		cbPerObj.World = XMLoadFloat4x4(&XMFLOAT4X4(*D3DXMatrixTranspose(&tmpMat, &md5World)));
 		cbPerObj.hasTexture = true;		// We'll assume all md5 subsets have textures
 		cbPerObj.hasNormMap = false;	// We'll also assume md5 models have no normal map (easy to change later though)
 		d3d11DevCon->UpdateSubresource(cbPerObjectBuffer, 0, NULL, &cbPerObj, 0, 0);
