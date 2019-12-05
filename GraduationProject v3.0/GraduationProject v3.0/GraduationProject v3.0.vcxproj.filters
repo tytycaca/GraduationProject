@@ -94,6 +94,9 @@
     <ClCompile Include="bitmapclass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="bitmapshaderclass.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bumpmapshaderclass.h">
@@ -186,6 +189,9 @@
     <ClInclude Include="bitmapclass.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="bitmapshaderclass.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Texture\boxTexture.jpg">
@@ -251,6 +257,15 @@
       <Filter>쉐이더 파일</Filter>
     </None>
     <None Include="texture_VS.hlsl">
+      <Filter>쉐이더 파일</Filter>
+    </None>
+    <None Include="bitmap.ps">
+      <Filter>쉐이더 파일</Filter>
+    </None>
+    <None Include="bitmap.vs">
+      <Filter>쉐이더 파일</Filter>
+    </None>
+    <None Include="Effects.fx">
       <Filter>쉐이더 파일</Filter>
     </None>
   </ItemGroup>

@@ -22,6 +22,9 @@ GraphicsClass::GraphicsClass()
 
 	m_Md5Model = 0;
 
+	for (int i = 0; i < BITMAPNUM; i++)
+		m_Bitmap[i] = 0;
+
 	m_movement = 0.0f;
 	m_AImovement = 0.0f;
 	plusMinus = 1;
@@ -53,7 +56,6 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_hwnd = hwnd;
 
 	bool result;
-	D3DXMATRIX baseViewMatrix;
 
 	// Create the Direct3D object.
 	m_D3D = new D3DClass;
@@ -100,8 +102,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// Set the initial position of the camera.
 	m_Camera->SetPosition(0.0f, 30.0f, 0.0f);
 	m_Camera->Render();
-	m_Camera->GetViewMatrix(baseViewMatrix);
-	m_Camera->SetPosition(0.0f, 120.0f, 0.0f);
+	m_Camera->GetViewMatrix(m_BaseViewMatrix);
+	m_Camera->SetPosition(0.0f, 100.0f, 0.0f);
 
 
 	////////////
@@ -131,12 +133,65 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the text object.
-	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, screenWidth, screenHeight, baseViewMatrix);
+	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, screenWidth, screenHeight, m_BaseViewMatrix);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the text object.", L"Error", MB_OK);
 		return false;
 	}
+
+
+	//////////////////
+	// BitmapShader //
+	//////////////////
+
+	// Create the texture shader object.
+	m_BitmapShader = new BitmapShaderClass;
+	if (!m_BitmapShader)
+	{
+		return false;
+	}
+
+	// Initialize the texture shader object.
+	result = m_BitmapShader->Initialize(m_D3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the bitmap shader object.", L"Error", MB_OK);
+		return false;
+	}
+
+
+	/////////////////
+	// Bitmap (UI) //
+	/////////////////
+
+	for (int i = 0; i < BITMAPNUM; i++)
+	{
+		// Create the bitmap object.
+		m_Bitmap[i] = new BitmapClass;
+		if (!m_Bitmap)
+		{
+			return false;
+		}
+	}
+
+	// Initialize the bitmap object.
+	result = m_Bitmap[0]->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, (WCHAR*)L"../GraduationProject v3.0/UI/UI Construction container SciFi crate.png", 287, 287);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the bitmap object.
+	result = m_Bitmap[1]->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, (WCHAR*)L"../GraduationProject v3.0/UI/UI Inventory HUD with Jewels.png", 728, 88);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
+		return false;
+	}
+
+
 
 
 	/////////////
@@ -329,6 +384,25 @@ void GraphicsClass::Shutdown()
 		m_Text = 0;
 	}
 
+	// Release the bitmap shader object.
+	if (m_BitmapShader)
+	{
+		m_BitmapShader->Shutdown();
+		delete m_BitmapShader;
+		m_BitmapShader = 0;
+	}
+
+	// Release the bitmap objects.
+	for (int i = 0; i < BITMAPNUM; i++)
+	{
+		if (m_Bitmap)
+		{
+			m_Bitmap[i]->Shutdown();
+			delete m_Bitmap[i];
+			m_Bitmap[i] = 0;
+		}
+	}
+
 	// Release the camera object.
 	if(m_Camera)
 	{
@@ -438,7 +512,8 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 {
 	D3DXMATRIX worldMatrix[MODELNUM], viewMatrix, projectionMatrix, translateMatrix, scaleMatrix;
-	D3DXMATRIX insMatrix;
+	D3DXMATRIX insWorld;
+	D3DXMATRIX bitmapWorld[BITMAPNUM];
 	D3DXMATRIX orthoMatrix;
 	D3DXVECTOR4 diffuseColor[1];
 	D3DXVECTOR4 lightPosition[1];
@@ -911,14 +986,14 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 
 	for (int i = 0; i < insPos.size(); i++)
 	{
-		m_D3D->GetWorldMatrix(insMatrix);
+		m_D3D->GetWorldMatrix(insWorld);
 		//D3DXMatrixRotationY(&insMatrix, insRot[i]);
 		//D3DXMatrixScaling(&scaleMatrix, 1.0f, 1.0f, 1.0f);
 		//D3DXMatrixMultiply(&insMatrix, &insMatrix, &scaleMatrix);
 		D3DXMatrixTranslation(&translateMatrix, insPos[i].x, /*insPos[i].y*/ 1.0f, insPos[i].z);
-		D3DXMatrixMultiply(&insMatrix, &insMatrix, &translateMatrix);
+		D3DXMatrixMultiply(&insWorld, &insWorld, &translateMatrix);
 		m_Model[4]->Render(m_D3D->GetDeviceContext());
-		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[4]->GetIndexCount(), insMatrix, viewMatrix, projectionMatrix,
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[4]->GetIndexCount(), insWorld, viewMatrix, projectionMatrix,
 			m_Model[4]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 		if (!result)
@@ -958,8 +1033,48 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 		m_Camera->SetRotation(20.0f, 0.0f, 0.0f);
 		isStart = false;
 	}
-		
 
+
+	//////////////////////
+	// Bitmap Rendering //
+	//////////////////////
+
+	for(int i = 0; i < BITMAPNUM; i++)
+		m_D3D->GetWorldMatrix(bitmapWorld[i]);
+
+	// Turn off the Z buffer to begin all 2D rendering.
+	m_D3D->TurnZBufferOff();
+
+	// Put the bitmap(UI Construction container SciFi crate.png) vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	result = m_Bitmap[0]->Render(m_D3D->GetDeviceContext(), 0, 773);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Render the bitmap(UI Construction container SciFi crate.png) with the texture shader.
+	result = m_BitmapShader->Render(m_D3D->GetDeviceContext(), m_Bitmap[0]->GetIndexCount(), bitmapWorld[0], m_BaseViewMatrix, orthoMatrix, m_Bitmap[0]->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Put the bitmap(UI Inventory HUD with Jewels.png) vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	result = m_Bitmap[1]->Render(m_D3D->GetDeviceContext(), 596, 972);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Render the bitmap(UI Inventory HUD with Jewels.png) with the texture shader.
+	result = m_BitmapShader->Render(m_D3D->GetDeviceContext(), m_Bitmap[1]->GetIndexCount(), bitmapWorld[1], m_BaseViewMatrix, orthoMatrix, m_Bitmap[1]->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Turn the Z buffer back on now that all 2D rendering has completed.
+	m_D3D->TurnZBufferOn();
 
 	// Present the rendered scene to the screen.
 	m_D3D->EndScene();

@@ -5,6 +5,7 @@
 #define _GRAPHICSCLASS_H_
 #define MODELNUM 50
 #define LIGHTNUM 2
+#define BITMAPNUM 2
 
 #include <vector>
 
@@ -26,12 +27,13 @@
 #include "md5modelclass.h"
 
 #include "bitmapclass.h"
+#include "bitmapshaderclass.h"
 
 
 /////////////
 // GLOBALS //
 /////////////
-const bool FULL_SCREEN = false;
+const bool FULL_SCREEN = true;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 100000.0f;
 const float SCREEN_NEAR = 0.1f;
@@ -80,6 +82,10 @@ private:
 
 	Md5ModelClass* m_Md5Model;
 
+	BitmapShaderClass* m_BitmapShader;
+
+	BitmapClass* m_Bitmap[BITMAPNUM];
+
 	float m_movement;
 	float m_AImovement;
 	int plusMinus;
@@ -95,6 +101,8 @@ private:
 
 	D3DXVECTOR3 m_charPos;
 	D3DXVECTOR3 m_charRot;
+
+	D3DXMATRIX m_BaseViewMatrix;
 	
 //public:
 //	float m_oldCamRot;
