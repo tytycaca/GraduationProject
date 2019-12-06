@@ -271,7 +271,7 @@ bool SystemClass::Frame()
 			m_Graphics->MoveCameraAndChar(DIK_D);
 		}
 
-		m_Graphics->AnimChar(m_Timer->GetTime());
+		m_Graphics->AnimCharWalk(m_Timer->GetTime());
 	}
 
 	if (m_Input->IsKeyPressed(DIK_LEFT)) m_Graphics->MovePad(DIK_LEFT, m_Timer->GetTime());

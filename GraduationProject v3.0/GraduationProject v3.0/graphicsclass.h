@@ -58,7 +58,7 @@ public:
 	void MovePad(int, float);
 	void MovePadAI(float);
 
-	void AnimChar(float);
+	void AnimCharWalk(float);
 
 private:
 	bool Render(float, DIMOUSESTATE);

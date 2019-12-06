@@ -274,7 +274,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the Md5Model object.
-	result = m_Md5Model->InitializeMd5Model(L"boy.md5mesh", L"boy.md5anim",m_D3D->GetDevice());
+	result = m_Md5Model->InitializeMd5Model(L"NuclearSuit character.md5mesh", L"NuclearSuit character Walk.md5anim",m_D3D->GetDevice());
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the Md5Model object.", L"Error", MB_OK);
@@ -291,7 +291,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	// Initialize the model0 object. (Floor.obj)
 	result = m_Model[0]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Floor.txt",
-		(WCHAR*)L"../GraduationProject v3.0/Texture/grassTexture.jpg");
+		(WCHAR*)L"../GraduationProject v3.0/Texture/darkGreenGrass.png");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -573,9 +573,9 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	// RENDER MD5MODEL //
 	/////////////////////
 
-	/////////
-	// boy //
-	/////////
+	//////////////////
+	// Nuclear Suit //
+	//////////////////
 
 	D3DXMATRIX md5World;
 	//D3DXMATRIX rotationMatrix;
@@ -958,7 +958,8 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 
 		/*insPos.push_back(m_Raycast->doRaycast(m_hwnd, m_Model[0]->getVertices(), m_Model[0]->getIndices(), worldMatrix[1], projectionMatrix, viewMatrix));*/
 		insPos.push_back(tmpInsPos);
-		insRot.push_back(m_Camera->GetLookAtVector().y);
+		insRot.push_back(m_charRot.y);
+		//insRot.push_back(m_Camera->GetLookAtVector().y);
 	}
 
 	if (mouseState.rgbButtons[1] && !isRClicked && !insPos.empty())
@@ -970,8 +971,8 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 
 		if(!insPos.empty())
 			insPos.pop_back();
-		//if (!insRot.empty())
-		//	insRot.pop_back();
+		if (!insRot.empty())
+			insRot.pop_back();
 	}
 
 	if (!mouseState.rgbButtons[0])
@@ -987,7 +988,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	for (int i = 0; i < insPos.size(); i++)
 	{
 		m_D3D->GetWorldMatrix(insWorld);
-		//D3DXMatrixRotationY(&insMatrix, insRot[i]);
+		D3DXMatrixRotationY(&insWorld, insRot[i]);
 		//D3DXMatrixScaling(&scaleMatrix, 1.0f, 1.0f, 1.0f);
 		//D3DXMatrixMultiply(&insMatrix, &insMatrix, &scaleMatrix);
 		D3DXMatrixTranslation(&translateMatrix, insPos[i].x, /*insPos[i].y*/ 1.0f, insPos[i].z);
@@ -1109,7 +1110,7 @@ void GraphicsClass::MoveCameraAndChar(int key)
 
 void GraphicsClass::RotateCameraAndChar(float x, float y, float z)
 {
-	m_Camera->SetRotation(x, y, z);
+	m_Camera->SetRotation(0.0f, y, z);
 	m_charRot = m_Camera->GetRotation() * 0.0174532925f;
 }
 
@@ -1133,8 +1134,8 @@ void GraphicsClass::MovePadAI(float frametime)
 	m_AImovement += 0.5f * plusMinus * frametime;	
 }
 
-void GraphicsClass::AnimChar(float frametime)
+void GraphicsClass::AnimCharWalk(float frametime)
 {
-	float timeFactor = 0.001f;	// You can speed up or slow down time by changing this
+	float timeFactor = 0.005f;	// You can speed up or slow down time by changing this
 	m_Md5Model->UpdateMD5Model(frametime*timeFactor, 0, m_D3D->GetDeviceContext());
 }

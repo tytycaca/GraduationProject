@@ -49,7 +49,7 @@ void Md5ModelClass::InitializeMd5Shader
 	light.range = 1000.0f;
 	light.cone = 12.0f;
 	light.att = D3DXVECTOR3(0.4f, 0.02f, 0.000f);
-	light.ambient = D3DXQUATERNION(0.2f, 0.2f, 0.2f, 1.0f);
+	light.ambient = D3DXQUATERNION(1.0f, 1.0f, 1.0f, 1.0f);
 	light.diffuse = D3DXQUATERNION(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//Create the Input Layout
