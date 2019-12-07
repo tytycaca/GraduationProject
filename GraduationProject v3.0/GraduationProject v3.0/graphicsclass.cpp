@@ -293,6 +293,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// Initialize the Md5Shader.
 	m_Md5Model->InitializeMd5Shader(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), screenWidth, screenHeight);
 
+	m_Md5Model->MakeAABB(XMMatrixIdentity());
 
 	///////////
 	// Floor //
@@ -313,7 +314,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	/////////////////////
 
 	// Initialize the model1 object.
-	result = m_Model[1]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/SmallTree.txt",
+	result = m_Model[1]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Rock1.txt",
 		(WCHAR*)L"../GraduationProject v3.0/Texture/NatureMap.png");
 	if (!result)
 	{
@@ -322,7 +323,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model2 object.
-	result = m_Model[2]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Rocks.txt",
+	result = m_Model[2]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Rock2.txt",
 		(WCHAR*)L"../GraduationProject v3.0/Texture/NatureMap.png");
 	if (!result)
 	{
@@ -331,8 +332,107 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model3 object.
-	result = m_Model[3]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/SmallRock.txt",
+	result = m_Model[3]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Rock3.txt",
 		(WCHAR*)L"../GraduationProject v3.0/Texture/NatureMap.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model4 object.
+	result = m_Model[4]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Rock4.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/NatureMap.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model5 object.
+	result = m_Model[5]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Rock5.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/NatureMap.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model6 object.
+	result = m_Model[6]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Rock6.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/NatureMap.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model7 object.
+	result = m_Model[7]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Tree1.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/NatureMap.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model8 object.
+	result = m_Model[8]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/PineTree1.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Nature_PineTree_RoseBush_Weeds.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model9 object.
+	result = m_Model[9]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/PineTree2.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Nature_PineTree_RoseBush_Weeds.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model10 object.
+	result = m_Model[10]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/PineTree3.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Nature_PineTree_RoseBush_Weeds.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model11 object.
+	result = m_Model[11]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/RoseBush1.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Nature_PineTree_RoseBush_Weeds.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model12 object.
+	result = m_Model[12]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/RoseBush2.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Nature_PineTree_RoseBush_Weeds.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model13 object.
+	result = m_Model[13]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Weeds1.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Nature_PineTree_RoseBush_Weeds.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model14 object.
+	result = m_Model[14]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Mushrooms1.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Nature_Mushrooms.png");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -344,8 +444,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// SciFiCrates //
 	/////////////////
 
-	// Initialize the model4 object.
-	result = m_Model[4]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/SciFiCrates.txt",
+	// Initialize the model13 object.
+	result = m_Model[15]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/SciFiCrates.txt",
 		(WCHAR*)L"../GraduationProject v3.0/Texture/crateTexture.png");
 	if (!result)
 	{
@@ -353,6 +453,10 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	for (int i = 1; i < 15; i++)
+	{
+		m_Model[i]->MakeAABB(XMMatrixIdentity());
+	}
 
 	return true;
 }
@@ -521,7 +625,7 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameTime)
 {
 	D3DXMATRIX worldMatrix[MODELNUM], viewMatrix, projectionMatrix, translateMatrix, scaleMatrix;
-	D3DXMATRIX insWorld;
+	D3DXMATRIX insWorld[100];
 	D3DXMATRIX bitmapWorld[BITMAPNUM];
 	D3DXMATRIX orthoMatrix;
 	D3DXVECTOR4 diffuseColor[1];
@@ -541,7 +645,6 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	m_Camera->Render();
 
 	// Get the world, view, and projection matrices from the camera and d3d objects.
-	m_D3D->GetWorldMatrix(worldMatrix[0]);
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 	m_D3D->GetOrthoMatrix(orthoMatrix);
@@ -656,6 +759,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	m_Md5Model->DrawMd5Model(m_D3D->GetDeviceContext(), md5World, viewMatrix, projectionMatrix);
 
 
+
 	///////////////////////
 	// MODEL POSITIONING //
 	///////////////////////
@@ -665,14 +769,12 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	///////////
 
 	// Floor
-	m_D3D->GetWorldMatrix(worldMatrix[1]);
-	D3DXMatrixRotationY(&worldMatrix[1], 0.0f);
-	//D3DXMatrixScaling(&scaleMatrix, 50.0f, 1.0f, 100.0f);
-	//D3DXMatrixMultiply(&worldMatrix[1], &worldMatrix[1], &scaleMatrix);
+	m_D3D->GetWorldMatrix(worldMatrix[0]);
+	D3DXMatrixRotationY(&worldMatrix[0], 0.0f);
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
-	D3DXMatrixMultiply(&worldMatrix[1], &worldMatrix[1], &translateMatrix);
+	D3DXMatrixMultiply(&worldMatrix[0], &worldMatrix[0], &translateMatrix);
 	m_Model[0]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[0]->GetIndexCount(), worldMatrix[1], viewMatrix, projectionMatrix,
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[0]->GetIndexCount(), worldMatrix[0], viewMatrix, projectionMatrix,
 		m_Model[0]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
@@ -684,254 +786,201 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	// Environment //
 	/////////////////
 
-	// SmallTree
+	// Rock1
+	m_D3D->GetWorldMatrix(worldMatrix[1]);
+	D3DXMatrixRotationY(&worldMatrix[1], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[1], &worldMatrix[1], &translateMatrix);
+	m_Model[1]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[1]->GetIndexCount(), worldMatrix[1], viewMatrix, projectionMatrix,
+		m_Model[1]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Rock2
 	m_D3D->GetWorldMatrix(worldMatrix[2]);
 	D3DXMatrixRotationY(&worldMatrix[2], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, -500.0f, 0.0f, 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[2], &worldMatrix[2], &translateMatrix);
-	m_Model[1]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[1]->GetIndexCount(), worldMatrix[2], viewMatrix, projectionMatrix,
-		m_Model[1]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	m_Model[2]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[2]->GetIndexCount(), worldMatrix[2], viewMatrix, projectionMatrix,
+		m_Model[2]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
 	}
 
-	// Rocks
+	// Rock3
 	m_D3D->GetWorldMatrix(worldMatrix[3]);
 	D3DXMatrixRotationY(&worldMatrix[3], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, 400.0f, 0.0f, 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[3], &worldMatrix[3], &translateMatrix);
-	m_Model[2]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[2]->GetIndexCount(), worldMatrix[3], viewMatrix, projectionMatrix,
-		m_Model[2]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	m_Model[3]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[3]->GetIndexCount(), worldMatrix[3], viewMatrix, projectionMatrix,
+		m_Model[3]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
 	}
 
-	// SmallTree
+	// Rock4
 	m_D3D->GetWorldMatrix(worldMatrix[4]);
 	D3DXMatrixRotationY(&worldMatrix[4], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, -200.0f, 0.0f, 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[4], &worldMatrix[4], &translateMatrix);
-	m_Model[1]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[1]->GetIndexCount(), worldMatrix[4], viewMatrix, projectionMatrix,
-		m_Model[1]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	m_Model[4]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[4]->GetIndexCount(), worldMatrix[4], viewMatrix, projectionMatrix,
+		m_Model[4]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
 	}
 
-	// Rocks
+	// Rock5
 	m_D3D->GetWorldMatrix(worldMatrix[5]);
 	D3DXMatrixRotationY(&worldMatrix[5], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, 200.0f, 0.0f, -400.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[5], &worldMatrix[5], &translateMatrix);
-	m_Model[2]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[2]->GetIndexCount(), worldMatrix[5], viewMatrix, projectionMatrix,
-		m_Model[2]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	m_Model[5]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[5]->GetIndexCount(), worldMatrix[5], viewMatrix, projectionMatrix,
+		m_Model[5]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
 	}
 
-	// SmallTree
+	// Rock6
 	m_D3D->GetWorldMatrix(worldMatrix[6]);
 	D3DXMatrixRotationY(&worldMatrix[6], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, -100.0f, 0.0f, 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[6], &worldMatrix[6], &translateMatrix);
-	m_Model[1]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[1]->GetIndexCount(), worldMatrix[6], viewMatrix, projectionMatrix,
-		m_Model[1]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	m_Model[6]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[6]->GetIndexCount(), worldMatrix[6], viewMatrix, projectionMatrix,
+		m_Model[6]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
 	}
 
-	// Rocks
+	// Tree1
 	m_D3D->GetWorldMatrix(worldMatrix[7]);
 	D3DXMatrixRotationY(&worldMatrix[7], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, 100.0f, 0.0f, 100.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[7], &worldMatrix[7], &translateMatrix);
-	m_Model[2]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[2]->GetIndexCount(), worldMatrix[7], viewMatrix, projectionMatrix,
-		m_Model[2]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	m_Model[7]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[7]->GetIndexCount(), worldMatrix[7], viewMatrix, projectionMatrix,
+		m_Model[7]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
 	}
 
-	//// SmallTree
-	//m_D3D->GetWorldMatrix(worldMatrix[8]);
-	//D3DXMatrixRotationY(&worldMatrix[8], 0.0f);
-	//D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
-	//D3DXMatrixMultiply(&worldMatrix[8], &worldMatrix[8], &translateMatrix);
-	//m_Model[1]->Render(m_D3D->GetDeviceContext());
-	//result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[1]->GetIndexCount(), worldMatrix[8], viewMatrix, projectionMatrix,
-	//	m_Model[1]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
-	//	m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
-	//if (!result)
-	//{
-	//	return false;
-	//}
+	// PineTree1
+	m_D3D->GetWorldMatrix(worldMatrix[8]);
+	D3DXMatrixRotationY(&worldMatrix[8], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[8], &worldMatrix[8], &translateMatrix);
+	m_Model[8]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[8]->GetIndexCount(), worldMatrix[8], viewMatrix, projectionMatrix,
+		m_Model[8]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+	if (!result)
+	{
+		return false;
+	}
 
-	// Rocks
+	// PineTree2
 	m_D3D->GetWorldMatrix(worldMatrix[9]);
 	D3DXMatrixRotationY(&worldMatrix[9], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, 100.0f, 0.0f, 100.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[9], &worldMatrix[9], &translateMatrix);
-	m_Model[2]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[2]->GetIndexCount(), worldMatrix[9], viewMatrix, projectionMatrix,
-		m_Model[2]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	m_Model[9]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[9]->GetIndexCount(), worldMatrix[9], viewMatrix, projectionMatrix,
+		m_Model[9]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
 	}
 
-	// SmallTree
+	// PineTree3
 	m_D3D->GetWorldMatrix(worldMatrix[10]);
 	D3DXMatrixRotationY(&worldMatrix[10], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, -100.0f, 0.0f, -300.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[10], &worldMatrix[10], &translateMatrix);
-	m_Model[1]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[1]->GetIndexCount(), worldMatrix[10], viewMatrix, projectionMatrix,
-		m_Model[1]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	m_Model[10]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[10]->GetIndexCount(), worldMatrix[10], viewMatrix, projectionMatrix,
+		m_Model[10]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
 	}
 
-	// SmallTree
+	// RoseBush1
 	m_D3D->GetWorldMatrix(worldMatrix[11]);
 	D3DXMatrixRotationY(&worldMatrix[11], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, -200.0f, 0.0f, -100.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[11], &worldMatrix[11], &translateMatrix);
-	m_Model[1]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[1]->GetIndexCount(), worldMatrix[11], viewMatrix, projectionMatrix,
-		m_Model[1]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	m_Model[11]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[11]->GetIndexCount(), worldMatrix[11], viewMatrix, projectionMatrix,
+		m_Model[11]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
 	}
 
-	// SmallTree
+	// RoseBush2
 	m_D3D->GetWorldMatrix(worldMatrix[12]);
 	D3DXMatrixRotationY(&worldMatrix[12], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, 100.0f, 0.0f, 200.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[12], &worldMatrix[12], &translateMatrix);
-	m_Model[1]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[1]->GetIndexCount(), worldMatrix[12], viewMatrix, projectionMatrix,
-		m_Model[1]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	m_Model[12]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[12]->GetIndexCount(), worldMatrix[12], viewMatrix, projectionMatrix,
+		m_Model[12]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
 	}
 
-	// SmallTree
+	// Weeds
 	m_D3D->GetWorldMatrix(worldMatrix[13]);
 	D3DXMatrixRotationY(&worldMatrix[13], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, 200.0f, 0.0f, -200.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[13], &worldMatrix[13], &translateMatrix);
-	m_Model[1]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[1]->GetIndexCount(), worldMatrix[13], viewMatrix, projectionMatrix,
-		m_Model[1]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	m_Model[13]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[13]->GetIndexCount(), worldMatrix[13], viewMatrix, projectionMatrix,
+		m_Model[13]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
 	}
 
-	// Rocks
+	// Mushrooms
 	m_D3D->GetWorldMatrix(worldMatrix[14]);
 	D3DXMatrixRotationY(&worldMatrix[14], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, 400.0f, 0.0f, -100.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[14], &worldMatrix[14], &translateMatrix);
-	m_Model[2]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[2]->GetIndexCount(), worldMatrix[14], viewMatrix, projectionMatrix,
-		m_Model[2]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+	m_Model[14]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[12]->GetIndexCount(), worldMatrix[14], viewMatrix, projectionMatrix,
+		m_Model[14]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
 	}
-
-	// Rocks
-	m_D3D->GetWorldMatrix(worldMatrix[15]);
-	D3DXMatrixRotationY(&worldMatrix[15], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, 300.0f, 0.0f, -200.0f);
-	D3DXMatrixMultiply(&worldMatrix[15], &worldMatrix[15], &translateMatrix);
-	m_Model[2]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[2]->GetIndexCount(), worldMatrix[15], viewMatrix, projectionMatrix,
-		m_Model[2]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
-		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
-	if (!result)
-	{
-		return false;
-	}
-
-	// Rocks
-	m_D3D->GetWorldMatrix(worldMatrix[16]);
-	D3DXMatrixRotationY(&worldMatrix[16], 0.0f);
-	D3DXMatrixTranslation(&translateMatrix, -200.0f, 0.0f, -100.0f);
-	D3DXMatrixMultiply(&worldMatrix[16], &worldMatrix[16], &translateMatrix);
-	m_Model[2]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[2]->GetIndexCount(), worldMatrix[16], viewMatrix, projectionMatrix,
-		m_Model[2]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
-		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
-	if (!result)
-	{
-		return false;
-	}
-
-	
-
-
-	///////////////
-	//// Pickaxe //
-	///////////////
-
-	//
-	//m_D3D->GetWorldMatrix(worldMatrix[4]);
-	//D3DXMatrixRotationY(&worldMatrix[4], 0.0f);
-	////D3DXMatrixScaling(&scaleMatrix, 500.0f, 500.0f, 500.0f);
-	////D3DXMatrixMultiply(&worldMatrix[4], &worldMatrix[4], &scaleMatrix);
-
-	//D3DXVECTOR3 InsPos;
-	//D3DXVECTOR3 trans;
-	//D3DXVec3Scale
-	//(
-	//	&trans,
-	//	&D3DXVECTOR3
-	//	(
-	//		m_Camera->GetLookAtVector().x * 20.0f,
-	//		m_Camera->GetLookAtVector().y * 20.0f,
-	//		m_Camera->GetLookAtVector().z * 20.0f
-	//	),
-	//	10.0f
-	//);
-	//D3DXVec3Add(&InsPos, &m_Camera->GetPosition(), &trans);
-
-	//D3DXMatrixTranslation(&translateMatrix, trans.x, trans.y, trans.z);
-	//D3DXMatrixMultiply(&worldMatrix[4], &worldMatrix[4], &translateMatrix);
-	//m_Model[3]->Render(m_D3D->GetDeviceContext());
-	//result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[3]->GetIndexCount(), worldMatrix[4], viewMatrix, projectionMatrix,
-	//	m_Model[3]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
-	//	m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
-	//if (!result)
-	//{
-	//	return false;
-	//}
 
 
 	////////////////////////////
@@ -1012,15 +1061,18 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 
 	for (int i = 0; i < insPos.size(); i++)
 	{
-		m_D3D->GetWorldMatrix(insWorld);
-		D3DXMatrixRotationY(&insWorld, insRot[i]);
+		m_D3D->GetWorldMatrix(insWorld[i]);
+		D3DXMatrixRotationY(&insWorld[i], insRot[i]);
 		//D3DXMatrixScaling(&scaleMatrix, 1.0f, 1.0f, 1.0f);
 		//D3DXMatrixMultiply(&insMatrix, &insMatrix, &scaleMatrix);
 		D3DXMatrixTranslation(&translateMatrix, insPos[i].x, /*insPos[i].y*/ 1.0f, insPos[i].z);
-		D3DXMatrixMultiply(&insWorld, &insWorld, &translateMatrix);
-		m_Model[4]->Render(m_D3D->GetDeviceContext());
-		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[4]->GetIndexCount(), insWorld, viewMatrix, projectionMatrix,
-			m_Model[4]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+		D3DXMatrixMultiply(&insWorld[i], &insWorld[i], &translateMatrix);
+
+		//m_Md5Model->MakeAABB((XMMATRIX)insWorld[i]);
+
+		m_Model[15]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[15]->GetIndexCount(), insWorld[i], viewMatrix, projectionMatrix,
+			m_Model[15]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 		if (!result)
 		{
@@ -1110,33 +1162,183 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 
 void GraphicsClass::MoveCameraAndChar(int key)
 {
+	D3DXVECTOR3 trans;
+	D3DXMATRIX md5World;
+	D3DXMATRIX translateMatrix;
+
 	if (key == DIK_W)
 	{
 		m_Camera->FrontWalk(1.0f);
+
+		D3DXMatrixIdentity(&md5World);
+
+		D3DXVec3Scale
+		(
+			&trans,
+			&D3DXVECTOR3
+			(
+				m_Camera->GetLookAtVector().x * 10.0f,
+				m_Camera->GetLookAtVector().y * 10.0f,
+				m_Camera->GetLookAtVector().z * 10.0f
+			),
+			10.0f
+		);
+
+		D3DXVec3Add(&trans, &m_Camera->GetPosition(), &trans);
+		D3DXMatrixRotationY(&md5World, m_charRot.y + 180.0f * 0.0174532925f);
+		D3DXMatrixTranslation(&translateMatrix, trans.x, 20.0f, trans.z);
+		D3DXMatrixMultiply(&md5World, &md5World, &translateMatrix);
+
+		m_Md5Model->MakeAABB((XMMATRIX)md5World);
+
 		//charPos = m_Camera->GetPosition();
+		for (int i = 0; i < 14; i++)
+		{
+			if (CollisionClass::BoundingBoxCollision(
+				m_Md5Model->GetBoundingBoxMin(),
+				m_Md5Model->GetBoundingBoxMax(),
+				m_Model[i]->GetBoundingBoxMin(),
+				m_Model[i]->GetBoundingBoxMax()))
+			{
+				m_Camera->FrontWalk(-2.0f);
+			}
+		}
 	}
 	if (key == DIK_S)
 	{
 		m_Camera->FrontWalk(-1.0f);
+
+		D3DXMatrixIdentity(&md5World);
+
+		D3DXVec3Scale
+		(
+			&trans,
+			&D3DXVECTOR3
+			(
+				m_Camera->GetLookAtVector().x * 10.0f,
+				m_Camera->GetLookAtVector().y * 10.0f,
+				m_Camera->GetLookAtVector().z * 10.0f
+			),
+			10.0f
+		);
+
+		D3DXVec3Add(&trans, &m_Camera->GetPosition(), &trans);
+		D3DXMatrixRotationY(&md5World, m_charRot.y + 180.0f * 0.0174532925f);
+		D3DXMatrixTranslation(&translateMatrix, trans.x, 20.0f, trans.z);
+		D3DXMatrixMultiply(&md5World, &md5World, &translateMatrix);
+
+		m_Md5Model->MakeAABB((XMMATRIX)md5World);
+
 		//charPos = m_Camera->GetPosition();
+		for (int i = 0; i < 14; i++)
+		{
+			if (CollisionClass::BoundingBoxCollision(
+				m_Md5Model->GetBoundingBoxMin(),
+				m_Md5Model->GetBoundingBoxMax(),
+				m_Model[i]->GetBoundingBoxMin(),
+				m_Model[i]->GetBoundingBoxMax()))
+			{
+				m_Camera->FrontWalk(+2.0f);
+			}
+		}
 	}
 
 	if (key == DIK_A)
 	{
 		m_Camera->SideWalk(1.0f);
+
+		D3DXMatrixIdentity(&md5World);
+
+		D3DXVec3Scale
+		(
+			&trans,
+			&D3DXVECTOR3
+			(
+				m_Camera->GetLookAtVector().x * 10.0f,
+				m_Camera->GetLookAtVector().y * 10.0f,
+				m_Camera->GetLookAtVector().z * 10.0f
+			),
+			10.0f
+		);
+
+		D3DXVec3Add(&trans, &m_Camera->GetPosition(), &trans);
+		D3DXMatrixRotationY(&md5World, m_charRot.y + 180.0f * 0.0174532925f);
+		D3DXMatrixTranslation(&translateMatrix, trans.x, 20.0f, trans.z);
+		D3DXMatrixMultiply(&md5World, &md5World, &translateMatrix);
+
+		m_Md5Model->MakeAABB((XMMATRIX)md5World);
+
 		//charPos = m_Camera->GetPosition();
+		for (int i = 0; i < 14; i++)
+		{
+			if (CollisionClass::BoundingBoxCollision(
+				m_Md5Model->GetBoundingBoxMin(),
+				m_Md5Model->GetBoundingBoxMax(),
+				m_Model[i]->GetBoundingBoxMin(),
+				m_Model[i]->GetBoundingBoxMax()))
+			{
+				m_Camera->SideWalk(-1.0f);
+			}
+		}
 	}
 	if (key == DIK_D)
 	{
 		m_Camera->SideWalk(-1.0f);
+
+		D3DXMatrixIdentity(&md5World);
+
+		D3DXVec3Scale
+		(
+			&trans,
+			&D3DXVECTOR3
+			(
+				m_Camera->GetLookAtVector().x * 10.0f,
+				m_Camera->GetLookAtVector().y * 10.0f,
+				m_Camera->GetLookAtVector().z * 10.0f
+			),
+			10.0f
+		);
+
+		D3DXVec3Add(&trans, &m_Camera->GetPosition(), &trans);
+		D3DXMatrixRotationY(&md5World, m_charRot.y + 180.0f * 0.0174532925f);
+		D3DXMatrixTranslation(&translateMatrix, trans.x, 20.0f, trans.z);
+		D3DXMatrixMultiply(&md5World, &md5World, &translateMatrix);
+
+		m_Md5Model->MakeAABB((XMMATRIX)md5World);
+
 		//charPos = m_Camera->GetPosition();
+		for (int i = 0; i < 14; i++)
+		{
+			if (CollisionClass::BoundingBoxCollision(
+				m_Md5Model->GetBoundingBoxMin(),
+				m_Md5Model->GetBoundingBoxMax(),
+				m_Model[i]->GetBoundingBoxMin(),
+				m_Model[i]->GetBoundingBoxMax()))
+			{
+				m_Camera->SideWalk(+1.0f);
+			}
+		}
 	}
 }
 
 void GraphicsClass::RotateCameraAndChar(float x, float y, float z)
 {
+	for (int i = 0; i < 14; i++)
+	{
+		if (CollisionClass::BoundingBoxCollision(
+			m_Md5Model->GetBoundingBoxMin(),
+			m_Md5Model->GetBoundingBoxMax(),
+			m_Model[i]->GetBoundingBoxMin(),
+			m_Model[i]->GetBoundingBoxMax()))
+		{
+			return;
+		}
+	}
+
 	m_Camera->SetRotation(0.0f, y, z);
 	m_charRot = m_Camera->GetRotation() * 0.0174532925f;
+
+	
 }
 
 void GraphicsClass::MovePad(int key, float frametime)

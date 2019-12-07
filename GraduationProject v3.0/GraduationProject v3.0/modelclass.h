@@ -12,6 +12,8 @@
 #include <d3dx10math.h>
 #include <fstream>
 #include <vector>
+
+#include <xnamath.h>
 using namespace std;
 
 
@@ -20,6 +22,7 @@ using namespace std;
 ///////////////////////
 #include "textureclass.h"
 
+#include "collisionclass.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ModelClass
@@ -81,6 +84,24 @@ private:
 	
 	vector<D3DXVECTOR3> vertexOut;
 	vector<DWORD> indexOut;
+
+	// boundingBoxVolume
+	vector<XMFLOAT3> modelVerts;
+	vector<XMFLOAT3> boundingBoxVerts;
+	vector<DWORD> boundingBoxVertIndex;
+	float boundingSphere;
+	XMVECTOR centerOffset;
+
+	XMVECTOR boundingBoxMin;
+	XMVECTOR boundingBoxMax;
+
+public:
+	void MakeAABB(XMMATRIX);
+	XMVECTOR GetBoundingBoxMin();
+	void SetBoundingBoxMin(XMVECTOR);
+	XMVECTOR GetBoundingBoxMax();
+	void SetBoundingBoxMax(XMVECTOR);
+	XMMATRIX GetWorldMatrix();
 };
 
 #endif

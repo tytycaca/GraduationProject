@@ -286,6 +286,13 @@ bool Md5ModelClass::LoadMD5Model
 					std::getline(fileIn, checkString);		// Skip rest of this line
 
 					MD5Model.joints.push_back(tempJoint);	// Store the joint into this models joint vector
+
+					//aabbÁ¦ÀÛ
+					XMFLOAT3 tempXm;
+					tempXm.x = tempJoint.pos.x;
+					tempXm.y = tempJoint.pos.y;
+					tempXm.z = tempJoint.pos.z;
+					modelVerts.push_back(tempXm);
 				}
 
 				fileIn >> checkString;					// Skip the "}"
@@ -1161,4 +1168,38 @@ void Md5ModelClass::DrawMd5Model(ID3D11DeviceContext* d3d11DevCon, D3DXMATRIX md
 float Md5ModelClass::getTotalAnimTime(int animation)
 {
 	return MD5Model.animations[animation].totalAnimTime;
+}
+
+void Md5ModelClass::MakeAABB(XMMATRIX xmWorld)
+{
+	CollisionClass::CreateBoundingVolumes(modelVerts,
+		boundingBoxVerts,
+		boundingBoxVertIndex,
+		boundingSphere,
+		centerOffset);
+
+	CollisionClass::CalculateAABB(boundingBoxVerts,
+		xmWorld,
+		boundingBoxMin,
+		boundingBoxMax);
+}
+
+XMVECTOR Md5ModelClass::GetBoundingBoxMin()
+{
+	return boundingBoxMin;
+}
+
+void Md5ModelClass::SetBoundingBoxMin(XMVECTOR min)
+{
+	boundingBoxMin = min;
+}
+
+XMVECTOR Md5ModelClass::GetBoundingBoxMax()
+{
+	return boundingBoxMax;
+}
+
+void Md5ModelClass::SetBoundingBoxMax(XMVECTOR max)
+{
+	boundingBoxMax = max;
 }

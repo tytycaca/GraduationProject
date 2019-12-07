@@ -15,6 +15,7 @@
 #include "xnamath.h"
 #include "D3DX11tex.h"
 
+#include "collisionclass.h"
 
 /////////////
 // GLOBALS //
@@ -219,6 +220,8 @@ public:
 	float getTotalAnimTime(int);
 
 
+	
+
 private:
 	Light light;
 
@@ -266,4 +269,22 @@ private:
 	D3DXQUATERNION tmpQuater;
 	D3DXMATRIX tmpMat;
 	D3DXVECTOR3 tmpVec3;
+
+	// boundingBoxVolume
+	std::vector<XMFLOAT3> modelVerts;
+	std::vector<XMFLOAT3> boundingBoxVerts;
+	std::vector<DWORD> boundingBoxVertIndex;
+	float boundingSphere;
+	XMVECTOR centerOffset;
+
+	XMVECTOR boundingBoxMin;
+	XMVECTOR boundingBoxMax;
+
+public:
+	void MakeAABB(XMMATRIX xmWorld);
+	XMVECTOR GetBoundingBoxMin();
+	void SetBoundingBoxMin(XMVECTOR);
+	XMVECTOR GetBoundingBoxMax();
+	void SetBoundingBoxMax(XMVECTOR);
+	XMMATRIX GetWorldMatrix();
 };

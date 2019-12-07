@@ -97,6 +97,9 @@
     <ClCompile Include="bitmapshaderclass.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="collisionclass.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bumpmapshaderclass.h">
@@ -190,6 +193,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="bitmapshaderclass.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="collisionclass.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

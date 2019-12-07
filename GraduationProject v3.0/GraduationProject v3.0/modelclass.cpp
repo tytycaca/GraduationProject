@@ -402,6 +402,13 @@ bool ModelClass::LoadModel(char* filename)
 		fin >> m_model[i].x >> m_model[i].y >> m_model[i].z;
 		fin >> m_model[i].tu >> m_model[i].tv;
 		fin >> m_model[i].nx >> m_model[i].ny >> m_model[i].nz;
+
+		XMFLOAT3 modelPos;
+		// boundingBox vertics ¼öÁý
+		modelPos.x = m_model[i].x;
+		modelPos.y = m_model[i].y;
+		modelPos.z = m_model[i].z;
+		modelVerts.push_back(modelPos);
 	}
 
 	// Close the model file.
@@ -432,4 +439,39 @@ vector<D3DXVECTOR3> ModelClass::getVertices()
 vector<DWORD> ModelClass::getIndices()
 {
 	return indexOut;
+}
+
+// boundingBox
+void ModelClass::MakeAABB(XMMATRIX xmWorld)
+{
+	CollisionClass::CreateBoundingVolumes(modelVerts,
+		boundingBoxVerts,
+		boundingBoxVertIndex,
+		boundingSphere,
+		centerOffset);
+
+	CollisionClass::CalculateAABB(boundingBoxVerts,
+		xmWorld,
+		boundingBoxMin,
+		boundingBoxMax);
+}
+
+XMVECTOR ModelClass::GetBoundingBoxMin()
+{
+	return boundingBoxMin;
+}
+
+void ModelClass::SetBoundingBoxMin(XMVECTOR min)
+{
+	boundingBoxMin = min;
+}
+
+XMVECTOR ModelClass::GetBoundingBoxMax()
+{
+	return boundingBoxMax;
+}
+
+void ModelClass::SetBoundingBoxMax(XMVECTOR max)
+{
+	boundingBoxMax = max;
 }
