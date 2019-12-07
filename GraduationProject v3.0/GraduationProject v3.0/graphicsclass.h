@@ -3,7 +3,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef _GRAPHICSCLASS_H_
 #define _GRAPHICSCLASS_H_
-#define MODELNUM 50
+#define MAXMODELNUM 50
+#define CURRENTMODELNUM 28
+#define LOOTINGMODELNUM 12
+#define CONSTRUCTIONMODELNUM 1
 #define LIGHTNUM 2
 #define BITMAPNUM 2
 
@@ -72,7 +75,7 @@ private:
 	ShaderManagerClass* m_ShaderManager;
 	CameraClass* m_Camera;
 	LightClass* m_Light[LIGHTNUM];
-	ModelClass* m_Model[MODELNUM];
+	ModelClass* m_Model[MAXMODELNUM];
 	PointLightClass *m_PointLight0;
 
 	TextClass* m_Text;
@@ -107,6 +110,8 @@ private:
 
 	float m_animTimeStack;
 	bool m_constructAnimTrigger;
+
+	bool m_isRender[LOOTINGMODELNUM];
 	
 //public:
 //	float m_oldCamRot;

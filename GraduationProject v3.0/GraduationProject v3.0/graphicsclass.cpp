@@ -11,7 +11,7 @@ GraphicsClass::GraphicsClass()
 	m_Camera = 0;
 	for (int i = 0; i < LIGHTNUM; i++)
 		m_Light[i] = 0;
-	for (int i = 0; i < MODELNUM; i++)
+	for (int i = 0; i < MAXMODELNUM; i++)
 		m_Model[i] = 0;
 
 	m_PointLight0 = 0;
@@ -41,6 +41,9 @@ GraphicsClass::GraphicsClass()
 
 	m_charPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_charRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	for (int i = 0; i < LOOTINGMODELNUM; i++)
+		m_isRender[i] = true;
 }
 
 
@@ -255,7 +258,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 
 	// Create the model objects.
-	for (int i = 0; i < MODELNUM; i++)
+	for (int i = 0; i < MAXMODELNUM; i++)
 	{
 		m_Model[i] = new ModelClass;
 		if (!m_Model[i])
@@ -309,9 +312,9 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 
-	/////////////////////
-	// Trees and Rocks //
-	/////////////////////
+	/////////////////
+	// Emvironment //
+	/////////////////
 
 	// Initialize the model1 object.
 	result = m_Model[1]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Rock1.txt",
@@ -440,12 +443,125 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 
+	//////////////////
+	// Looting Gems //
+	//////////////////
+
+	// Initialize the model15 object.
+	result = m_Model[15]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Emerald1.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Gems.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model16 object.
+	result = m_Model[16]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Emerald2.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Gems.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model17 object.
+	result = m_Model[17]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Emerald3.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Gems.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model18 object.
+	result = m_Model[18]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Ruby1.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Gems.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model19 object.
+	result = m_Model[19]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Ruby2.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Gems.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model20 object.
+	result = m_Model[20]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Ruby3.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Gems.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model21 object.
+	result = m_Model[21]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Sapphire1.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Gems.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model22 object.
+	result = m_Model[22]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Sapphire2.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Gems.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model23 object.
+	result = m_Model[23]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Sapphire3.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Gems.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model24 object.
+	result = m_Model[24]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Amethyst1.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Gems.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model25 object.
+	result = m_Model[25]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Amethyst2.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Gems.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the model26 object.
+	result = m_Model[26]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/Amethyst3.txt",
+		(WCHAR*)L"../GraduationProject v3.0/Texture/Gems.png");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+
 	/////////////////
 	// SciFiCrates //
 	/////////////////
 
 	// Initialize the model13 object.
-	result = m_Model[15]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/SciFiCrates.txt",
+	result = m_Model[27]->Initialize(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/SciFiCrates.txt",
 		(WCHAR*)L"../GraduationProject v3.0/Texture/crateTexture.png");
 	if (!result)
 	{
@@ -453,7 +569,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	for (int i = 1; i < 15; i++)
+	for (int i = 1; i < CURRENTMODELNUM - CONSTRUCTIONMODELNUM; i++)
 	{
 		m_Model[i]->MakeAABB(XMMatrixIdentity());
 	}
@@ -465,7 +581,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 void GraphicsClass::Shutdown()
 {
 	// Release the model objects.
-	for (int i = 0; i < MODELNUM; i++)
+	for (int i = 0; i < MAXMODELNUM; i++)
 	{
 		m_Model[i]->Shutdown();
 		delete m_Model[i];
@@ -624,7 +740,7 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 
 bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameTime)
 {
-	D3DXMATRIX worldMatrix[MODELNUM], viewMatrix, projectionMatrix, translateMatrix, scaleMatrix;
+	D3DXMATRIX worldMatrix[MAXMODELNUM], viewMatrix, projectionMatrix, translateMatrix, scaleMatrix;
 	D3DXMATRIX insWorld[100];
 	D3DXMATRIX bitmapWorld[BITMAPNUM];
 	D3DXMATRIX orthoMatrix;
@@ -974,12 +1090,247 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[14], &worldMatrix[14], &translateMatrix);
 	m_Model[14]->Render(m_D3D->GetDeviceContext());
-	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[12]->GetIndexCount(), worldMatrix[14], viewMatrix, projectionMatrix,
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[14]->GetIndexCount(), worldMatrix[14], viewMatrix, projectionMatrix,
 		m_Model[14]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 	if (!result)
 	{
 		return false;
+	}
+
+
+	//////////////////
+	// Looting Gems //
+	//////////////////
+
+	// Emerald1
+	m_D3D->GetWorldMatrix(worldMatrix[15]);
+	D3DXMatrixRotationY(&worldMatrix[15], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[15], &worldMatrix[15], &translateMatrix);
+
+	if (m_isRender[0])
+	{
+		m_Model[15]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[15]->GetIndexCount(), worldMatrix[15], viewMatrix, projectionMatrix,
+			m_Model[15]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Emerald2
+	m_D3D->GetWorldMatrix(worldMatrix[16]);
+	D3DXMatrixRotationY(&worldMatrix[16], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[16], &worldMatrix[16], &translateMatrix);
+
+	if (m_isRender[1])
+	{
+		m_Model[16]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[16]->GetIndexCount(), worldMatrix[16], viewMatrix, projectionMatrix,
+			m_Model[16]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Emerald3
+	m_D3D->GetWorldMatrix(worldMatrix[17]);
+	D3DXMatrixRotationY(&worldMatrix[17], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[17], &worldMatrix[17], &translateMatrix);
+
+	if (m_isRender[2])
+	{
+		m_Model[17]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[17]->GetIndexCount(), worldMatrix[17], viewMatrix, projectionMatrix,
+			m_Model[17]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Ruby1
+	m_D3D->GetWorldMatrix(worldMatrix[18]);
+	D3DXMatrixRotationY(&worldMatrix[18], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[18], &worldMatrix[18], &translateMatrix);
+
+	if (m_isRender[3])
+	{
+		m_Model[18]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[18]->GetIndexCount(), worldMatrix[18], viewMatrix, projectionMatrix,
+			m_Model[18]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Ruby2
+	m_D3D->GetWorldMatrix(worldMatrix[19]);
+	D3DXMatrixRotationY(&worldMatrix[19], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[19], &worldMatrix[19], &translateMatrix);
+
+	if (m_isRender[4])
+	{
+		m_Model[19]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[19]->GetIndexCount(), worldMatrix[19], viewMatrix, projectionMatrix,
+			m_Model[19]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Ruby3
+	m_D3D->GetWorldMatrix(worldMatrix[20]);
+	D3DXMatrixRotationY(&worldMatrix[20], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[20], &worldMatrix[20], &translateMatrix);
+
+	if (m_isRender[5])
+	{
+		m_Model[20]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[20]->GetIndexCount(), worldMatrix[20], viewMatrix, projectionMatrix,
+			m_Model[20]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Sapphire1
+	m_D3D->GetWorldMatrix(worldMatrix[21]);
+	D3DXMatrixRotationY(&worldMatrix[21], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[21], &worldMatrix[21], &translateMatrix);
+
+	if (m_isRender[6])
+	{
+		m_Model[21]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[21]->GetIndexCount(), worldMatrix[21], viewMatrix, projectionMatrix,
+			m_Model[21]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Sapphire2
+	m_D3D->GetWorldMatrix(worldMatrix[22]);
+	D3DXMatrixRotationY(&worldMatrix[22], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[22], &worldMatrix[22], &translateMatrix);
+
+	if (m_isRender[7])
+	{
+		m_Model[22]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[22]->GetIndexCount(), worldMatrix[22], viewMatrix, projectionMatrix,
+			m_Model[22]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Sapphire3
+	m_D3D->GetWorldMatrix(worldMatrix[23]);
+	D3DXMatrixRotationY(&worldMatrix[23], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[23], &worldMatrix[23], &translateMatrix);
+
+	if (m_isRender[8])
+	{
+		m_Model[23]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[23]->GetIndexCount(), worldMatrix[23], viewMatrix, projectionMatrix,
+			m_Model[23]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Amethyst1
+	m_D3D->GetWorldMatrix(worldMatrix[24]);
+	D3DXMatrixRotationY(&worldMatrix[24], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[24], &worldMatrix[24], &translateMatrix);
+
+	if (m_isRender[9])
+	{
+		m_Model[24]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[24]->GetIndexCount(), worldMatrix[24], viewMatrix, projectionMatrix,
+			m_Model[24]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Amethyst2
+	m_D3D->GetWorldMatrix(worldMatrix[25]);
+	D3DXMatrixRotationY(&worldMatrix[25], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[25], &worldMatrix[25], &translateMatrix);
+
+	if (m_isRender[10])
+	{
+		m_Model[25]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[25]->GetIndexCount(), worldMatrix[25], viewMatrix, projectionMatrix,
+			m_Model[25]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Amethyst3
+	m_D3D->GetWorldMatrix(worldMatrix[26]);
+	D3DXMatrixRotationY(&worldMatrix[26], 0.0f);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[26], &worldMatrix[26], &translateMatrix);
+
+	if (m_isRender[11])
+	{
+		m_Model[26]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[26]->GetIndexCount(), worldMatrix[26], viewMatrix, projectionMatrix,
+			m_Model[26]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	for (int i = 15; i < 15 + LOOTINGMODELNUM; i++)
+	{
+		if (
+			CollisionClass::BoundingBoxCollision
+			(
+				m_Md5Model->GetBoundingBoxMin(),
+				m_Md5Model->GetBoundingBoxMax(),
+				m_Model[i]->GetBoundingBoxMin(),
+				m_Model[i]->GetBoundingBoxMax()
+			)
+			)
+			m_isRender[i - 15] = false;
 	}
 
 
@@ -1070,9 +1421,9 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 
 		//m_Md5Model->MakeAABB((XMMATRIX)insWorld[i]);
 
-		m_Model[15]->Render(m_D3D->GetDeviceContext());
-		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[15]->GetIndexCount(), insWorld[i], viewMatrix, projectionMatrix,
-			m_Model[15]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
+		m_Model[27]->Render(m_D3D->GetDeviceContext());
+		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[27]->GetIndexCount(), insWorld[i], viewMatrix, projectionMatrix,
+			m_Model[27]->GetTexture(), m_Light[0]->GetDirection(), m_Light[0]->GetAmbientColor(), m_Light[0]->GetDiffuseColor(),
 			m_Camera->GetPosition(), m_Light[0]->GetSpecularColor(), m_Light[0]->GetSpecularPower());
 		if (!result)
 		{
@@ -1192,7 +1543,7 @@ void GraphicsClass::MoveCameraAndChar(int key)
 		m_Md5Model->MakeAABB((XMMATRIX)md5World);
 
 		//charPos = m_Camera->GetPosition();
-		for (int i = 0; i < 14; i++)
+		for (int i = 0; i < CURRENTMODELNUM - LOOTINGMODELNUM - CONSTRUCTIONMODELNUM; i++)
 		{
 			if (CollisionClass::BoundingBoxCollision(
 				m_Md5Model->GetBoundingBoxMin(),
@@ -1230,7 +1581,7 @@ void GraphicsClass::MoveCameraAndChar(int key)
 		m_Md5Model->MakeAABB((XMMATRIX)md5World);
 
 		//charPos = m_Camera->GetPosition();
-		for (int i = 0; i < 14; i++)
+		for (int i = 0; i < CURRENTMODELNUM - LOOTINGMODELNUM - CONSTRUCTIONMODELNUM; i++)
 		{
 			if (CollisionClass::BoundingBoxCollision(
 				m_Md5Model->GetBoundingBoxMin(),
@@ -1269,7 +1620,7 @@ void GraphicsClass::MoveCameraAndChar(int key)
 		m_Md5Model->MakeAABB((XMMATRIX)md5World);
 
 		//charPos = m_Camera->GetPosition();
-		for (int i = 0; i < 14; i++)
+		for (int i = 0; i < CURRENTMODELNUM - LOOTINGMODELNUM - CONSTRUCTIONMODELNUM; i++)
 		{
 			if (CollisionClass::BoundingBoxCollision(
 				m_Md5Model->GetBoundingBoxMin(),
@@ -1307,7 +1658,7 @@ void GraphicsClass::MoveCameraAndChar(int key)
 		m_Md5Model->MakeAABB((XMMATRIX)md5World);
 
 		//charPos = m_Camera->GetPosition();
-		for (int i = 0; i < 14; i++)
+		for (int i = 0; i < CURRENTMODELNUM - LOOTINGMODELNUM - CONSTRUCTIONMODELNUM; i++)
 		{
 			if (CollisionClass::BoundingBoxCollision(
 				m_Md5Model->GetBoundingBoxMin(),
@@ -1323,7 +1674,7 @@ void GraphicsClass::MoveCameraAndChar(int key)
 
 void GraphicsClass::RotateCameraAndChar(float x, float y, float z)
 {
-	for (int i = 0; i < 14; i++)
+	for (int i = 0; i < CURRENTMODELNUM - LOOTINGMODELNUM - CONSTRUCTIONMODELNUM; i++)
 	{
 		if (CollisionClass::BoundingBoxCollision(
 			m_Md5Model->GetBoundingBoxMin(),

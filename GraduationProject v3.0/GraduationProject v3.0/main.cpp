@@ -31,10 +31,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 	
 	int vertexCount, textureCount, normalCount, faceCount;
 
-	char filename[MODELNUM][256] = { "Floor.obj", "LWall.obj", "RWall.obj", "Sphere.obj"
+	char filename[MAXMODELNUM][256] = { "Floor.obj", "LWall.obj", "RWall.obj", "Sphere.obj"
 									 "PadMe.obj", "PadOpponent.obj"};
 
-	for (int i = 0; i < MODELNUM; i++)
+	for (int i = 0; i < MAXMODELNUM; i++)
 	{
 		result = ReadFileCounts(filename[i], vertexCount, textureCount, normalCount, faceCount);
 		cntObj += 1;
