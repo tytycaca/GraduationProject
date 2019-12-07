@@ -196,7 +196,7 @@ public:
 	Md5ModelClass(const Md5ModelClass&);
 	~Md5ModelClass();
 
-	bool InitializeMd5Model(std::wstring, std::wstring, ID3D11Device*);
+	bool InitializeMd5Model(std::wstring, std::wstring, std::wstring, ID3D11Device*);
 
 	void InitializeMd5Shader(ID3D11Device*, ID3D11DeviceContext*, int, int);
 
@@ -215,6 +215,8 @@ public:
 	void UpdateMD5Model(float deltaTime, int animation, ID3D11DeviceContext*);
 
 	void DrawMd5Model(ID3D11DeviceContext*, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX);
+
+	float getTotalAnimTime(int);
 
 
 private:

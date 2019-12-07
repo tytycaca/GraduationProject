@@ -36,6 +36,9 @@ GraphicsClass::GraphicsClass()
 	isLClicked = false;
 	isRClicked = false;
 
+	m_animTimeStack = 0.0f;
+	m_constructAnimTrigger = false;
+
 	m_charPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_charRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
@@ -274,7 +277,13 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the Md5Model object.
-	result = m_Md5Model->InitializeMd5Model(L"NuclearSuit character.md5mesh", L"NuclearSuit character Walk.md5anim",m_D3D->GetDevice());
+	result = m_Md5Model->InitializeMd5Model
+	(
+		L"NuclearSuit character.md5mesh",
+		L"NuclearSuit character Walk.md5anim",
+		L"NuclearSuit character Construction.md5anim",
+		m_D3D->GetDevice()
+	);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the Md5Model object.", L"Error", MB_OK);
@@ -499,7 +508,7 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 	m_Camera->TickUpdate();
 
 	// Render the graphics scene.
-	result = Render(rotation, mouseState);
+	result = Render(rotation, mouseState, frameTime);
 	if(!result)
 	{
 		return false;
@@ -509,7 +518,7 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 }
 
 
-bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
+bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameTime)
 {
 	D3DXMATRIX worldMatrix[MODELNUM], viewMatrix, projectionMatrix, translateMatrix, scaleMatrix;
 	D3DXMATRIX insWorld;
@@ -936,6 +945,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 	if (mouseState.rgbButtons[0] && !isLClicked)
 	{
 		isLClicked = true;
+		m_constructAnimTrigger = true;
 
 		m_obj += 1;
 		m_poly += 184;
@@ -961,10 +971,11 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 		insRot.push_back(m_charRot.y);
 		//insRot.push_back(m_Camera->GetLookAtVector().y);
 	}
-
+	
 	if (mouseState.rgbButtons[1] && !isRClicked && !insPos.empty())
 	{
 		isRClicked = true;
+		m_constructAnimTrigger = true;
 
 		m_obj -= 1;
 		m_poly -= 184;
@@ -973,6 +984,20 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState)
 			insPos.pop_back();
 		if (!insRot.empty())
 			insRot.pop_back();
+	}
+
+	if (m_constructAnimTrigger)
+	{
+		m_animTimeStack += frameTime * 0.005f;
+
+		if (m_animTimeStack < m_Md5Model->getTotalAnimTime(1))
+			AnimCharConstruct(frameTime);
+
+		if (m_animTimeStack >= m_Md5Model->getTotalAnimTime(1))
+		{
+			m_animTimeStack = 0.0f;
+			m_constructAnimTrigger = false;
+		}
 	}
 
 	if (!mouseState.rgbButtons[0])
@@ -1138,4 +1163,10 @@ void GraphicsClass::AnimCharWalk(float frametime)
 {
 	float timeFactor = 0.005f;	// You can speed up or slow down time by changing this
 	m_Md5Model->UpdateMD5Model(frametime*timeFactor, 0, m_D3D->GetDeviceContext());
+}
+
+void GraphicsClass::AnimCharConstruct(float frametime)
+{
+	float timeFactor = 0.005f;	// You can speed up or slow down time by changing this
+	m_Md5Model->UpdateMD5Model(frametime*timeFactor, 1, m_D3D->GetDeviceContext());
 }

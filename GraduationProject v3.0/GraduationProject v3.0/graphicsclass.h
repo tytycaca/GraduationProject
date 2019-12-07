@@ -59,9 +59,10 @@ public:
 	void MovePadAI(float);
 
 	void AnimCharWalk(float);
+	void AnimCharConstruct(float);
 
 private:
-	bool Render(float, DIMOUSESTATE);
+	bool Render(float, DIMOUSESTATE, float);
 
 private:
 	vector<D3DXVECTOR3> insPos;
@@ -103,6 +104,9 @@ private:
 	D3DXVECTOR3 m_charRot;
 
 	D3DXMATRIX m_BaseViewMatrix;
+
+	float m_animTimeStack;
+	bool m_constructAnimTrigger;
 	
 //public:
 //	float m_oldCamRot;

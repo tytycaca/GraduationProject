@@ -175,12 +175,14 @@ void Md5ModelClass::InitializeMd5Shader
 }
 
 
-bool Md5ModelClass::InitializeMd5Model(std::wstring filename1, std::wstring filename2, ID3D11Device* d3d11Device)
+bool Md5ModelClass::InitializeMd5Model(std::wstring filename1, std::wstring filename2, std::wstring filename3, ID3D11Device* d3d11Device)
 {
 	if (!LoadMD5Model(filename1, MD5Model, meshSRV, textureNameArray, d3d11Device))
 		return false;
 	///////////////**************new**************////////////////////	
 	if (!LoadMD5Anim(filename2, MD5Model))
+		return false;
+	if (!LoadMD5Anim(filename3, MD5Model))
 		return false;
 	///////////////**************new**************////////////////////
 }
@@ -1154,4 +1156,9 @@ void Md5ModelClass::DrawMd5Model(ID3D11DeviceContext* d3d11DevCon, D3DXMATRIX md
 	//	if (!material[meshSubsetTexture[i]].transparent)
 	//		d3d11DevCon->DrawIndexed(indexDrawAmount, indexStart, 0);
 	//}
+}
+
+float Md5ModelClass::getTotalAnimTime(int animation)
+{
+	return MD5Model.animations[animation].totalAnimTime;
 }
