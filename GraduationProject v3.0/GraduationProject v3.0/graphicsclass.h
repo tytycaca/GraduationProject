@@ -29,11 +29,13 @@
 
 #include "soundclass.h"
 
+#include "gameclass.h"
+
 
 /////////////
 // GLOBALS //
 /////////////
-const bool FULL_SCREEN = true;
+const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 100000.0f;
 const float SCREEN_NEAR = 0.1f;
@@ -51,7 +53,7 @@ public:
 
 	bool Initialize(int, int, HWND);
 	void Shutdown();
-	bool Frame(int, int, int, int, int, int, float, DIMOUSESTATE);
+	bool Frame(int, int, int, int, int, int, float, DIMOUSESTATE, bool, bool, bool);
 
 	void MoveCameraAndChar(int);
 	void RotateCameraAndChar(float, float, float);
@@ -89,11 +91,11 @@ private:
 
 	SoundClass* m_Sound;
 
+	GameClass* m_Game;
+
 	float m_movement;
 	float m_AImovement;
 	int plusMinus;
-
-	float isStart;
 
 	HWND m_hwnd;
 
@@ -101,6 +103,8 @@ private:
 	bool checkFirst;
 
 	bool isLClicked, isRClicked;
+	bool isEnterOn;
+	bool isF5On;
 
 	D3DXVECTOR3 m_charPos;
 	D3DXVECTOR3 m_charRot;
@@ -110,7 +114,7 @@ private:
 	float m_animTimeStack;
 	bool m_constructAnimTrigger;
 
-	bool m_isRender[LOOTINGMODELNUM];
+	bool m_isLootModelRender[LOOTINGMODELNUM];
 	
 //public:
 //	float m_oldCamRot;

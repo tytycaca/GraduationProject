@@ -22,14 +22,14 @@ GraphicsClass::GraphicsClass()
 
 	m_Md5Model = 0;
 
+	m_Game = 0;
+
 	for (int i = 0; i < BITMAPNUM; i++)
 		m_Bitmap[i] = 0;
 
 	m_movement = 0.0f;
 	m_AImovement = 0.0f;
 	plusMinus = 1;
-
-	isStart = true;
 
 	checkFirst = false;
 
@@ -43,7 +43,10 @@ GraphicsClass::GraphicsClass()
 	m_charRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	for (int i = 0; i < LOOTINGMODELNUM; i++)
-		m_isRender[i] = true;
+		m_isLootModelRender[i] = true;
+
+	isF5On = false;
+	isEnterOn = false;
 }
 
 
@@ -80,14 +83,29 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	// Create the shader manager object.
 	m_ShaderManager = new ShaderManagerClass;
-	if(!m_ShaderManager)
+	if (!m_ShaderManager)
 	{
 		return false;
 	}
 
 	// Initialize the shader manager object.
 	result = m_ShaderManager->Initialize(m_D3D->GetDevice(), hwnd);
-	if(!result)
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the shader manager object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Create the game object.
+	m_Game = new GameClass;
+	if (!m_Game)
+	{
+		return false;
+	}
+
+	// Initialize the game object.
+	result = m_Game->Initialize();
+	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the shader manager object.", L"Error", MB_OK);
 		return false;
@@ -110,7 +128,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Play the wave file now that it has been loaded.
-	result = m_Sound->PlayWaveFile(0, true, -1500);
+	// result = m_Sound->PlayWaveFile(0, true, -1500);
 
 
 	////////////
@@ -125,10 +143,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 30.0f, 0.0f);
+	m_Camera->SetPosition(0.0f, 0.0f, 0.0f);
 	m_Camera->Render();
 	m_Camera->GetViewMatrix(m_BaseViewMatrix);
 	m_Camera->SetPosition(0.0f, 100.0f, 0.0f);
+	m_Camera->SetRotation(20.0f, 0.0f, 0.0f);
 
 
 	////////////
@@ -201,7 +220,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the bitmap object.
-	result = m_Bitmap[0]->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, (WCHAR*)L"../GraduationProject v3.0/UI/UI Construction container SciFi crate.png", 287, 287);
+	result = m_Bitmap[0]->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, (WCHAR*)L"../GraduationProject v3.0/UI/1600 x 900/UI Construction container SciFi crate.png", 239, 239);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
@@ -209,7 +228,31 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the bitmap object.
-	result = m_Bitmap[1]->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, (WCHAR*)L"../GraduationProject v3.0/UI/UI Inventory HUD with Jewels.png", 728, 88);
+	result = m_Bitmap[1]->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, (WCHAR*)L"../GraduationProject v3.0/UI/1600 x 900/UI Inventory HUD with Jewels.png", 606, 73);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the bitmap object.
+	result = m_Bitmap[2]->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, (WCHAR*)L"../GraduationProject v3.0/UI/1600 x 900/World Maker Title img.png", 1600, 900);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the bitmap object.
+	result = m_Bitmap[3]->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, (WCHAR*)L"../GraduationProject v3.0/UI/1600 x 900/World Maker Controls img.png", 1600, 900);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the bitmap object.
+	result = m_Bitmap[4]->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, (WCHAR*)L"../GraduationProject v3.0/UI/1600 x 900/World Maker Ending img.png", 1600, 900);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
@@ -697,8 +740,100 @@ void GraphicsClass::Shutdown()
 }
 
 
-bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int screenY, float frameTime, DIMOUSESTATE mouseState)
+bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int screenY, float frameTime, DIMOUSESTATE mouseState, bool isEnterPressed, bool isF5Pressed, bool isSpacePressed)
 {
+	// Title Scene to Controls Scene
+	if (m_Game->GetSceneType() == 0 && isEnterPressed)
+	{
+		m_Sound->PlayWaveFile(6, false);
+		m_Game->SetSceneType(1);
+	}
+
+	// Controls Scene to Main Scene
+	if (m_Game->GetSceneType() == 1 && isSpacePressed)
+	{
+		m_Sound->PlayWaveFile(6, false);
+		m_Game->SetSceneType(2);
+
+		m_Sound->isTitleBGMStart = false;
+		m_Sound->isMainBGMStart = true;
+		m_Sound->isEndingBGMStart = false;
+	}
+
+	// Main Scene to Title Scene
+	if (m_Game->GetSceneType() == 2 && isF5Pressed)
+	{
+		m_Sound->PlayWaveFile(6, false);
+		m_Game->SetSceneType(0);
+
+		m_Sound->isTitleBGMStart = true;
+		m_Sound->isMainBGMStart = false;
+		m_Sound->isEndingBGMStart = false;
+
+		m_Camera->SetPosition(0.0f, 100.0f, 0.0f);
+
+		for (int i = 0; i < LOOTINGMODELNUM; i++)
+		{
+			m_isLootModelRender[i] = true;
+			m_Model[i + 15]->SetColCheckEnabled(true);
+		}
+
+		m_Game->SetEmeralCnt(0);
+		m_Game->SetRubyCnt(0);
+		m_Game->SetSapphCnt(0);
+		m_Game->SetAmethCnt(0);
+
+		m_Game->SetConsModelNum(0);
+
+		while (!insPos.empty())
+		{
+			insPos.pop_back();
+			insRot.pop_back();
+		}
+	}
+
+	// Main Scene to Ending Scene
+	if (m_Game->GetSceneType() == 2 && m_Game->GetConsModelNum() == 3)
+	{
+		m_Game->SetSceneType(3);
+
+		m_Sound->isTitleBGMStart = false;
+		m_Sound->isMainBGMStart = false;
+		m_Sound->isEndingBGMStart = true;
+	}
+
+	// Ending Scene to Title Scene
+	if (m_Game->GetSceneType() == 3 && isF5Pressed)
+	{
+		m_Sound->PlayWaveFile(6, false);
+		m_Game->SetSceneType(0);
+
+		m_Sound->isTitleBGMStart = true;
+		m_Sound->isMainBGMStart = false;
+		m_Sound->isEndingBGMStart = false;
+
+		m_Camera->SetPosition(0.0f, 100.0f, 0.0f);
+
+		for (int i = 0; i < LOOTINGMODELNUM; i++)
+		{
+			m_isLootModelRender[i] = true;
+			m_Model[i + 15]->SetColCheckEnabled(true);
+		}
+
+		m_Game->SetEmeralCnt(0);
+		m_Game->SetRubyCnt(0);
+		m_Game->SetSapphCnt(0);
+		m_Game->SetAmethCnt(0);
+
+		m_Game->SetConsModelNum(0);
+
+		while (!insPos.empty())
+		{
+			insPos.pop_back();
+			insRot.pop_back();
+		}
+	}
+
 	bool result;
 	static float rotation = 0.0f;
 
@@ -709,8 +844,6 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 		
 		checkFirst = true;
 	}
-
-	//m_Camera->TickUpdate();
 
 	// Update the rotation variable each frame.
 	rotation += (float)D3DX_PI * 0.001f * frameTime;
@@ -751,6 +884,34 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 	if(!result)
 	{
 		return false;
+	}
+
+	// Title Scene
+	if (m_Game->GetSceneType() == 0)
+	{
+		m_Sound->StopWaveFile(0);
+		m_Sound->StopWaveFile(5);
+		if (m_Sound->isTitleBGMStart)
+			result = m_Sound->PlayWaveFile(4, true, -1500);;
+		m_Sound->isTitleBGMStart = false;
+	}
+	// Main Scene
+	else if (m_Game->GetSceneType() == 2)
+	{
+		m_Sound->StopWaveFile(4);
+		m_Sound->StopWaveFile(5);
+		if (m_Sound->isMainBGMStart)
+			result = m_Sound->PlayWaveFile(0, true, -1500);;
+		m_Sound->isMainBGMStart = false;
+	}
+	// Ending Scene
+	else if (m_Game->GetSceneType() == 3)
+	{
+		m_Sound->StopWaveFile(0);
+		m_Sound->StopWaveFile(4);
+		if (m_Sound->isEndingBGMStart)
+			result = m_Sound->PlayWaveFile(5, true, -1500);;
+		m_Sound->isEndingBGMStart = false;
 	}
 
 	return true;
@@ -1128,7 +1289,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[15], &worldMatrix[15], &translateMatrix);
 
-	if (m_isRender[0])
+	if (m_isLootModelRender[0])
 	{
 		m_Model[15]->Render(m_D3D->GetDeviceContext());
 		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[15]->GetIndexCount(), worldMatrix[15], viewMatrix, projectionMatrix,
@@ -1146,7 +1307,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[16], &worldMatrix[16], &translateMatrix);
 
-	if (m_isRender[1])
+	if (m_isLootModelRender[1])
 	{
 		m_Model[16]->Render(m_D3D->GetDeviceContext());
 		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[16]->GetIndexCount(), worldMatrix[16], viewMatrix, projectionMatrix,
@@ -1164,7 +1325,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[17], &worldMatrix[17], &translateMatrix);
 
-	if (m_isRender[2])
+	if (m_isLootModelRender[2])
 	{
 		m_Model[17]->Render(m_D3D->GetDeviceContext());
 		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[17]->GetIndexCount(), worldMatrix[17], viewMatrix, projectionMatrix,
@@ -1182,7 +1343,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[18], &worldMatrix[18], &translateMatrix);
 
-	if (m_isRender[3])
+	if (m_isLootModelRender[3])
 	{
 		m_Model[18]->Render(m_D3D->GetDeviceContext());
 		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[18]->GetIndexCount(), worldMatrix[18], viewMatrix, projectionMatrix,
@@ -1200,7 +1361,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[19], &worldMatrix[19], &translateMatrix);
 
-	if (m_isRender[4])
+	if (m_isLootModelRender[4])
 	{
 		m_Model[19]->Render(m_D3D->GetDeviceContext());
 		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[19]->GetIndexCount(), worldMatrix[19], viewMatrix, projectionMatrix,
@@ -1218,7 +1379,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[20], &worldMatrix[20], &translateMatrix);
 
-	if (m_isRender[5])
+	if (m_isLootModelRender[5])
 	{
 		m_Model[20]->Render(m_D3D->GetDeviceContext());
 		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[20]->GetIndexCount(), worldMatrix[20], viewMatrix, projectionMatrix,
@@ -1236,7 +1397,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[21], &worldMatrix[21], &translateMatrix);
 
-	if (m_isRender[6])
+	if (m_isLootModelRender[6])
 	{
 		m_Model[21]->Render(m_D3D->GetDeviceContext());
 		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[21]->GetIndexCount(), worldMatrix[21], viewMatrix, projectionMatrix,
@@ -1254,7 +1415,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[22], &worldMatrix[22], &translateMatrix);
 
-	if (m_isRender[7])
+	if (m_isLootModelRender[7])
 	{
 		m_Model[22]->Render(m_D3D->GetDeviceContext());
 		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[22]->GetIndexCount(), worldMatrix[22], viewMatrix, projectionMatrix,
@@ -1272,7 +1433,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[23], &worldMatrix[23], &translateMatrix);
 
-	if (m_isRender[8])
+	if (m_isLootModelRender[8])
 	{
 		m_Model[23]->Render(m_D3D->GetDeviceContext());
 		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[23]->GetIndexCount(), worldMatrix[23], viewMatrix, projectionMatrix,
@@ -1290,7 +1451,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[24], &worldMatrix[24], &translateMatrix);
 
-	if (m_isRender[9])
+	if (m_isLootModelRender[9])
 	{
 		m_Model[24]->Render(m_D3D->GetDeviceContext());
 		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[24]->GetIndexCount(), worldMatrix[24], viewMatrix, projectionMatrix,
@@ -1308,7 +1469,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[25], &worldMatrix[25], &translateMatrix);
 
-	if (m_isRender[10])
+	if (m_isLootModelRender[10])
 	{
 		m_Model[25]->Render(m_D3D->GetDeviceContext());
 		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[25]->GetIndexCount(), worldMatrix[25], viewMatrix, projectionMatrix,
@@ -1326,7 +1487,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixTranslation(&translateMatrix, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixMultiply(&worldMatrix[26], &worldMatrix[26], &translateMatrix);
 
-	if (m_isRender[11])
+	if (m_isLootModelRender[11])
 	{
 		m_Model[26]->Render(m_D3D->GetDeviceContext());
 		result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_Model[26]->GetIndexCount(), worldMatrix[26], viewMatrix, projectionMatrix,
@@ -1351,7 +1512,19 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 			)
 			)
 		{
-			m_isRender[i - 15] = false;
+			m_obj -= 1;
+			m_poly -= 288;
+
+			if (i >= 15 && i <= 17)
+				m_Game->IncEmeralCnt();
+			if (i >= 18 && i <= 20)
+				m_Game->IncRubyCnt();
+			if (i >= 21 && i <= 23)
+				m_Game->IncSapphCnt();
+			if (i >= 24 && i <= 26)
+				m_Game->IncAmethCnt();
+
+			m_isLootModelRender[i - 15] = false;
 			m_Model[i]->SetColCheckEnabled(false);
 			m_Sound->PlayWaveFile(3, false);
 		}
@@ -1368,38 +1541,45 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 
 	if (mouseState.rgbButtons[0] && !isLClicked)
 	{
-		isLClicked = true;
-		m_constructAnimTrigger = true;
+		if (m_Game->AbleToConstruct())
+		{
+			m_Game->ConstructCrate();
 
-		m_obj += 1;
-		m_poly += 184;
+			isLClicked = true;
+			m_constructAnimTrigger = true;
 
-		m_Sound->PlayWaveFile(1, false, -300);
+			m_obj += 1;
+			m_poly += 184;
 
-		D3DXVECTOR3 tmpInsPos;
-		D3DXVECTOR3 transVec;
-		D3DXVec3Scale
-		(
-			&transVec,
-			&D3DXVECTOR3
+			m_Sound->PlayWaveFile(1, false, -300);
+
+			D3DXVECTOR3 tmpInsPos;
+			D3DXVECTOR3 transVec;
+			D3DXVec3Scale
 			(
-				m_Camera->GetLookAtVector().x * 10.0f,
-				m_Camera->GetLookAtVector().y * 10.0f,
-				m_Camera->GetLookAtVector().z * 10.0f
-			),
-			15.0f
-		);
+				&transVec,
+				&D3DXVECTOR3
+				(
+					m_Camera->GetLookAtVector().x * 10.0f,
+					m_Camera->GetLookAtVector().y * 10.0f,
+					m_Camera->GetLookAtVector().z * 10.0f
+				),
+				15.0f
+			);
 
-		D3DXVec3Add(&tmpInsPos, &m_Camera->GetPosition(), &transVec);
+			D3DXVec3Add(&tmpInsPos, &m_Camera->GetPosition(), &transVec);
 
-		/*insPos.push_back(m_Raycast->doRaycast(m_hwnd, m_Model[0]->getVertices(), m_Model[0]->getIndices(), worldMatrix[1], projectionMatrix, viewMatrix));*/
-		insPos.push_back(tmpInsPos);
-		insRot.push_back(m_charRot.y);
-		//insRot.push_back(m_Camera->GetLookAtVector().y);
+			/*insPos.push_back(m_Raycast->doRaycast(m_hwnd, m_Model[0]->getVertices(), m_Model[0]->getIndices(), worldMatrix[1], projectionMatrix, viewMatrix));*/
+			insPos.push_back(tmpInsPos);
+			insRot.push_back(m_charRot.y);
+			//insRot.push_back(m_Camera->GetLookAtVector().y);
+		}
 	}
 	
 	if (mouseState.rgbButtons[1] && !isRClicked && !insPos.empty())
 	{
+		m_Game->DestructCrate();
+
 		isRClicked = true;
 		m_constructAnimTrigger = true;
 
@@ -1484,12 +1664,12 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	// Turn the Z buffer back on now that all 2D rendering has completed.
 	m_D3D->TurnZBufferOn();
 
-	// Set the Start Camera Rotation.
-	if (isStart)
-	{
-		m_Camera->SetRotation(20.0f, 0.0f, 0.0f);
-		isStart = false;
-	}
+	//// Set the Start Camera Rotation.
+	//if (isStart)
+	//{
+	//	m_Camera->SetRotation(20.0f, 0.0f, 0.0f);
+	//	isStart = false;
+	//}
 
 
 	//////////////////////
@@ -1503,7 +1683,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	m_D3D->TurnZBufferOff();
 
 	// Put the bitmap(UI Construction container SciFi crate.png) vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	result = m_Bitmap[0]->Render(m_D3D->GetDeviceContext(), 0, 773);
+	result = m_Bitmap[0]->Render(m_D3D->GetDeviceContext(), 0, 661);
 	if (!result)
 	{
 		return false;
@@ -1517,7 +1697,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	}
 
 	// Put the bitmap(UI Inventory HUD with Jewels.png) vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	result = m_Bitmap[1]->Render(m_D3D->GetDeviceContext(), 596, 972);
+	result = m_Bitmap[1]->Render(m_D3D->GetDeviceContext(), 497, 827);
 	if (!result)
 	{
 		return false;
@@ -1528,6 +1708,60 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	if (!result)
 	{
 		return false;
+	}
+
+	// Title Scene (SceneType 0)
+	if (m_Game->GetSceneType() == 0)
+	{
+		// Put the bitmap(World Maker Title img.png) vertex and index buffers on the graphics pipeline to prepare them for drawing.
+		result = m_Bitmap[2]->Render(m_D3D->GetDeviceContext(), 0, 0);
+		if (!result)
+		{
+			return false;
+		}
+
+		// Render the bitmap(World Maker Title img.png) with the texture shader.
+		result = m_BitmapShader->Render(m_D3D->GetDeviceContext(), m_Bitmap[2]->GetIndexCount(), bitmapWorld[2], m_BaseViewMatrix, orthoMatrix, m_Bitmap[2]->GetTexture());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Controls Scene (SceneType 1)
+	if (m_Game->GetSceneType() == 1)
+	{
+		// Put the bitmap(World Maker Controls img.png) vertex and index buffers on the graphics pipeline to prepare them for drawing.
+		result = m_Bitmap[3]->Render(m_D3D->GetDeviceContext(), 0, 0);
+		if (!result)
+		{
+			return false;
+		}
+
+		// Render the bitmap(World Maker Controls img.png) with the texture shader.
+		result = m_BitmapShader->Render(m_D3D->GetDeviceContext(), m_Bitmap[3]->GetIndexCount(), bitmapWorld[3], m_BaseViewMatrix, orthoMatrix, m_Bitmap[3]->GetTexture());
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	// Ending Scene (SceneType 3)
+	if (m_Game->GetSceneType() == 3)
+	{
+		// Put the bitmap(World Maker Ending img.png) vertex and index buffers on the graphics pipeline to prepare them for drawing.
+		result = m_Bitmap[4]->Render(m_D3D->GetDeviceContext(), 0, 0);
+		if (!result)
+		{
+			return false;
+		}
+
+		// Render the bitmap(World Maker Ending img.png) with the texture shader.
+		result = m_BitmapShader->Render(m_D3D->GetDeviceContext(), m_Bitmap[4]->GetIndexCount(), bitmapWorld[4], m_BaseViewMatrix, orthoMatrix, m_Bitmap[4]->GetTexture());
+		if (!result)
+		{
+			return false;
+		}
 	}
 
 	// Turn the Z buffer back on now that all 2D rendering has completed.
@@ -1719,7 +1953,7 @@ void GraphicsClass::RotateCameraAndChar(float x, float y, float z)
 		}
 	}
 
-	m_Camera->SetRotation(0.0f, y, z);
+	m_Camera->SetRotation(x, y, z);
 	m_charRot = m_Camera->GetRotation() * 0.0174532925f;
 }
 

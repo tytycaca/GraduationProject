@@ -26,12 +26,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 	SystemClass* System;
 	bool result;
 	
-	int cntObj = 0;
-	int cntPoly = 0;
+	int cntObj = CURRENTMODELNUM;
+	int cntPoly = 58716;
 	
 	int vertexCount, textureCount, normalCount, faceCount;
 
-	char filename[MAXMODELNUM][256] = { "Floor.obj", "LWall.obj", "RWall.obj", "Sphere.obj"
+	/*char filename[MAXMODELNUM][256] = { "Floor.obj", "LWall.obj", "RWall.obj", "Sphere.obj"
 									 "PadMe.obj", "PadOpponent.obj"};
 
 	for (int i = 0; i < MAXMODELNUM; i++)
@@ -39,7 +39,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 		result = ReadFileCounts(filename[i], vertexCount, textureCount, normalCount, faceCount);
 		cntObj += 1;
 		cntPoly += faceCount * 3;
-	}
+	}*/
 
 	// Create the system object.
 	System = new SystemClass;
@@ -49,7 +49,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 	}
 
 	// Initialize and run the system object.
-	result = System->Initialize(16, cntPoly);
+	result = System->Initialize(cntObj, cntPoly);
 	if(result)
 	{
 		System->Run();

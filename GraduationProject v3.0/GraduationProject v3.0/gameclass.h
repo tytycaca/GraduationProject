@@ -23,37 +23,54 @@ public:
 	GameClass(const GameClass&);
 	~GameClass();
 
-	void initialize();
+	bool Initialize();
 
-	int getSceneType();
+	int GetSceneType();
+	void SetSceneType(int);
 
-	int getSapphCnt();
-	int getEmeralCnt();
-	int getDiaCnt();
-	int getAmethCnt();
-	int getRubyCnt();
+	int GetEmeralCnt();
+	int GetRubyCnt();
+	int GetSapphCnt();
+	int GetAmethCnt();
+	int GetDiaCnt();
 
-	void setSceneType(int);
+	void SetEmeralCnt(int);
+	void SetRubyCnt(int);
+	void SetSapphCnt(int);
+	void SetAmethCnt(int);
+	void SetDiaCnt(int);
 
-	void setSapphCnt(int);
-	void setEmeralCnt(int);
-	void setDiaCnt(int);
-	void setAmethCnt(int);
-	void setRubyCnt(int);
+	void IncEmeralCnt();
+	void IncRubyCnt();
+	void IncSapphCnt();
+	void IncAmethCnt();
+	void IncDiaCnt();
 
-private:
-	void sceneManager();
+	void DecEmeralCnt();
+	void DecRubyCnt();
+	void DecSapphCnt();
+	void DecAmethCnt();
+	void DecDiaCnt();
 
+	void ConstructCrate();
+	void DestructCrate();
+	int GetConsModelNum();
+	void SetConsModelNum(int);
 
+	bool AbleToConstruct();
 
 private:
 	int m_sceneType;
+
+	int m_consModelNum;
 
 	int m_sapphireCnt;
 	int m_emeraldCnt;
 	int m_diamondCnt;
 	int m_amethystCnt;
 	int m_rubyCnt;
+
+	bool m_isGameCleared;
 };
 
 #endif

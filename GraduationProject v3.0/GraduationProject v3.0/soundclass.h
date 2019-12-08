@@ -63,12 +63,18 @@ private:
 
 public:
 	bool PlayWaveFile(int, bool, int volume = DEFAULTVOLUME);
+	bool StopWaveFile(int);
 
 private:
 	int currentSoundPos;
 	IDirectSound8* m_DirectSound;
 	IDirectSoundBuffer* m_primaryBuffer;
-	IDirectSoundBuffer8* m_secondaryBuffer[10];
+	IDirectSoundBuffer8* m_secondaryBuffer[SOUNDFILENUM];
+
+public:
+	bool isTitleBGMStart;
+	bool isMainBGMStart;
+	bool isEndingBGMStart;
 };
 
 #endif

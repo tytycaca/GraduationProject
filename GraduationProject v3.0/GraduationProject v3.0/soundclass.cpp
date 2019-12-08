@@ -9,8 +9,12 @@ SoundClass::SoundClass()
 	m_DirectSound = 0;
 	m_primaryBuffer = 0;
 	currentSoundPos = -1;
-	for(int i = 0; i < 10; i++)
+	for(int i = 0; i < SOUNDFILENUM; i++)
 		m_secondaryBuffer[i] = 0;
+
+	isTitleBGMStart = true;
+	isMainBGMStart = false;
+	isEndingBGMStart = false;
 }
 
 
@@ -36,7 +40,7 @@ bool SoundClass::Initialize(HWND hwnd)
 	}
 
 	// Load a wave audio file onto a secondary buffer.
-	result = LoadWaveFile((char *)"../GraduationProject v3.0/data/sound01.wav", &m_secondaryBuffer[0]);
+	result = LoadWaveFile((char *)"../GraduationProject v3.0/data/Maplestory lith harbor.wav", &m_secondaryBuffer[0]);
 	if(!result)
 	{
 		return false;
@@ -60,6 +64,24 @@ bool SoundClass::Initialize(HWND hwnd)
 		return false;
 	}
 
+	result = LoadWaveFile((char *)"../GraduationProject v3.0/data/Toby Fox - Undertale.wav", &m_secondaryBuffer[4]);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = LoadWaveFile((char *)"../GraduationProject v3.0/data/Ampyx - Sunset Surf.wav", &m_secondaryBuffer[5]);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = LoadWaveFile((char *)"../GraduationProject v3.0/data/Coins drop.wav", &m_secondaryBuffer[6]);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -67,7 +89,7 @@ bool SoundClass::Initialize(HWND hwnd)
 void SoundClass::Shutdown()
 {
 	// Release the secondary buffer.
-	for(int i = 0; i < 10; i++)
+	for(int i = 0; i < SOUNDFILENUM; i++)
 		ShutdownWaveFile(&m_secondaryBuffer[i]);
 
 	// Shutdown the Direct Sound API.
@@ -364,4 +386,17 @@ bool SoundClass::PlayWaveFile(int index, bool isLoop, int volume)
 	}
 
 	return true;
+}
+
+
+bool SoundClass::StopWaveFile(int index)
+{
+	HRESULT result;
+
+	// Stop the contents of the secondary sound buffer.
+	result = m_secondaryBuffer[index]->Stop();
+	if (FAILED(result))
+	{
+		return false;
+	}
 }
