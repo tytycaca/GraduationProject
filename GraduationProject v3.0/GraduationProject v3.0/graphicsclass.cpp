@@ -259,6 +259,22 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	// Initialize the bitmap object.
+	result = m_Bitmap[5]->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, (WCHAR*)L"../GraduationProject v3.0/UI/Tutorial instruction resized.png", 500, 200);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Initialize the bitmap object.
+	result = m_Bitmap[6]->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, (WCHAR*)L"../GraduationProject v3.0/UI/Exclamation mark resized.png", 80, 80);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the bitmap object.", L"Error", MB_OK);
+		return false;
+	}
+
 
 
 
@@ -1015,12 +1031,7 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	//////////////////
 
 	D3DXMATRIX md5World;
-	//D3DXMATRIX rotationMatrix;
-	//D3DXMATRIX inverseMat;
 	D3DXVECTOR3 trans;
-	//XMFLOAT4X4 convertMat;
-	//D3DXMATRIX inputWorld, inputView, inputProj;
-	//float camCharDistance;
 
 	m_D3D->GetWorldMatrix(md5World);
 	D3DXVec3Scale
@@ -1041,48 +1052,8 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	D3DXMatrixRotationY(&md5World, m_charRot.y + 180.0f * 0.0174532925f);
 	D3DXMatrixTranslation(&translateMatrix, trans.x, 20.0f, trans.z);
 	D3DXMatrixMultiply(&md5World, &md5World, &translateMatrix);
-	
-	/*if(m_Camera->GetRotation().y != m_oldCamRot)
-		m_Camera->SetPosition
-		(
-			m_Camera->GetPosition().x,
-			m_Camera->GetPosition().y - sin(m_Camera->GetRotation().y) * 10.0f,
-			m_Camera->GetPosition().z
-		);
-	m_oldCamRot = m_Camera->GetRotation().y;*/
-
-	/*convertMat = XMFLOAT4X4(md5World);
-		XMFLOAT4X4
-	{
-		md5World._11, md5World._12, md5World._13, md5World._14,
-		md5World._21, md5World._22, md5World._23, md5World._24,
-		md5World._31, md5World._32, md5World._33, md5World._34,
-		md5World._41, md5World._42, md5World._43, md5World._44
-	};
-	inputWorld = XMLoadFloat4x4(&convertMat);
-
-	convertMat = XMFLOAT4X4(viewMatrix);
-		XMFLOAT4X4
-	{
-		viewMatrix._11, viewMatrix._12, viewMatrix._13, viewMatrix._14,
-		viewMatrix._21, viewMatrix._22, viewMatrix._23, viewMatrix._24,
-		viewMatrix._31, viewMatrix._32, viewMatrix._33, viewMatrix._34,
-		viewMatrix._41, viewMatrix._42, viewMatrix._43, viewMatrix._44
-	};
-	inputView = XMLoadFloat4x4(&convertMat);
-
-	convertMat = XMFLOAT4X4(projectionMatrix);
-		XMFLOAT4X4
-	{
-		projectionMatrix._11, projectionMatrix._12, projectionMatrix._13, projectionMatrix._14,
-		projectionMatrix._21, projectionMatrix._22, projectionMatrix._23, projectionMatrix._24,
-		projectionMatrix._31, projectionMatrix._32, projectionMatrix._33, projectionMatrix._34,
-		projectionMatrix._41, projectionMatrix._42, projectionMatrix._43, projectionMatrix._44
-	};
-	inputProj = XMLoadFloat4x4(&convertMat);*/
 
 	m_Md5Model->DrawMd5Model(m_D3D->GetDeviceContext(), md5World, viewMatrix, projectionMatrix);
-
 
 
 	///////////////////////
@@ -1812,6 +1783,41 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	{
 		return false;
 	}
+
+	m_D3D->TurnOnAlphaBlending();
+
+	// Put the bitmap(Tutorial instruction resized.png) vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	result = m_Bitmap[5]->Render(m_D3D->GetDeviceContext(), 1070, 30);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Render the bitmap(Tutorial instruction resized.png) with the texture shader.
+	result = m_BitmapShader->Render(m_D3D->GetDeviceContext(), m_Bitmap[5]->GetIndexCount(), bitmapWorld[5], m_BaseViewMatrix, orthoMatrix, m_Bitmap[5]->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
+
+	if (m_Game->GetEmeralCnt() > 0 && m_Game->GetRubyCnt() > 0 && m_Game->GetSapphCnt() > 0 && m_Game->GetAmethCnt() > 0)
+	{
+		// Put the bitmap(Exclamation mark resized.png) vertex and index buffers on the graphics pipeline to prepare them for drawing.
+		result = m_Bitmap[6]->Render(m_D3D->GetDeviceContext(), 187, 631);
+		if (!result)
+		{
+			return false;
+		}
+
+		// Render the bitmap(Exclamation mark resized.png) with the texture shader.
+		result = m_BitmapShader->Render(m_D3D->GetDeviceContext(), m_Bitmap[6]->GetIndexCount(), bitmapWorld[6], m_BaseViewMatrix, orthoMatrix, m_Bitmap[6]->GetTexture());
+		if (!result)
+		{
+			return false;
+		}
+	}
+	
+	m_D3D->TurnOffAlphaBlending();
 
 	// Title Scene (SceneType 0)
 	if (m_Game->GetSceneType() == 0)

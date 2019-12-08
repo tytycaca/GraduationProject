@@ -233,7 +233,7 @@ bool TextClass::SetFps(int fps, ID3D11DeviceContext* deviceContext)
 		blue = 0.0f;
 	}
 	// Update the sentence vertex buffer with the new string information.
-	result = UpdateSentence(m_sentence[0], fpsString, 20, 20, red, green, blue, deviceContext);
+	result = UpdateSentence(m_sentence[0], fpsString, 20, 40, red, green, blue, deviceContext);
 	if (!result)
 	{
 		return false;
@@ -253,7 +253,7 @@ bool TextClass::SetCpu(int cpu, ID3D11DeviceContext* deviceContext)
 	strcat_s(cpuString, tempString);
 	strcat_s(cpuString, "%");
 	// Update the sentence vertex buffer with the new string information.
-	result = UpdateSentence(m_sentence[1], cpuString, 20, 40, 1.0f, 1.0f, 1.0f, deviceContext);
+	result = UpdateSentence(m_sentence[1], cpuString, 20, 60, 1.0f, 1.0f, 1.0f, deviceContext);
 	if (!result)
 	{
 		return false;
@@ -272,7 +272,7 @@ bool TextClass::SetObject(int obj, ID3D11DeviceContext* deviceContext)
 	strcpy_s(objString, "Objects : ");
 	strcat_s(objString, tempString);
 
-	result = UpdateSentence(m_sentence[2], objString, 20, 60, 1.0f, 1.0f, 1.0f, deviceContext);
+	result = UpdateSentence(m_sentence[2], objString, 20, 80, 1.0f, 1.0f, 1.0f, deviceContext);
 	if (!result) return false;
 
 	return true;
@@ -290,7 +290,7 @@ bool TextClass::SetPolygon(int poly, ID3D11DeviceContext* deviceContext)
 	strcpy_s(polyString, "Polygons : ");
 	strcat_s(polyString, tempString);
 
-	result = UpdateSentence(m_sentence[3], polyString, 20, 80, 1.0f, 1.0f, 1.0f, deviceContext);
+	result = UpdateSentence(m_sentence[3], polyString, 20, 100, 1.0f, 1.0f, 1.0f, deviceContext);
 	if (!result) return false;
 
 	return true;
@@ -311,7 +311,7 @@ bool TextClass::SetScreenSize(int x, int y, ID3D11DeviceContext* deviceContext)
 	strcat_s(ScreenSizeString, "x");
 	strcat_s(ScreenSizeString, tempString[1]);
 
-	result = UpdateSentence(m_sentence[4], ScreenSizeString, 20, 100, 1.0f, 1.0f, 1.0f, deviceContext);
+	result = UpdateSentence(m_sentence[4], ScreenSizeString, 20, 120, 1.0f, 1.0f, 1.0f, deviceContext);
 	if (!result) return false;
 
 	return true;

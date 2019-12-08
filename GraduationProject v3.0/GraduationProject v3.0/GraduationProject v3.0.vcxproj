@@ -23,6 +23,8 @@
     <None Include="bitmap.vs" />
     <None Include="bumpmap_PS.hlsl" />
     <None Include="bumpmap_VS.hlsl" />
+    <None Include="fire.ps" />
+    <None Include="fire.vs" />
     <None Include="font.ps" />
     <None Include="font.vs" />
     <None Include="light_PS.hlsl" />
