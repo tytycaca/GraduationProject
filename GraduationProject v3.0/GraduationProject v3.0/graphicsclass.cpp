@@ -636,6 +636,35 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		m_Model[i]->MakeAABB(XMMatrixIdentity());
 	}
 
+
+	////////////////////
+	// Visual Effects //
+	////////////////////
+
+	// Fire
+	result = m_Model[28]->InitializeFire(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/fireplane.txt", (WCHAR*)L"../GraduationProject v3.0/texture/fire01.dds", (WCHAR*)L"../GraduationProject v3.0/texture/noise01.dds", (WCHAR*)L"../GraduationProject v3.0/texture/alpha01.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the fire model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Portal
+	result = m_Model[29]->InitializeFire(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/fireplane.txt", (WCHAR*)L"../GraduationProject v3.0/texture/spin02.png", (WCHAR*)L"../GraduationProject v3.0/texture/soundwave.png", (WCHAR*)L"../GraduationProject v3.0/texture/alpha01.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the fire model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Portal
+	result = m_Model[30]->InitializeFire(m_D3D->GetDevice(), (char*)"../GraduationProject v3.0/fireplane.txt", (WCHAR*)L"../GraduationProject v3.0/texture/spin03.png", (WCHAR*)L"../GraduationProject v3.0/texture/soundwave2.png", (WCHAR*)L"../GraduationProject v3.0/texture/alpha01.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the fire model object.", L"Error", MB_OK);
+		return false;
+	}
+
 	return true;
 }
 
@@ -1529,6 +1558,80 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 			m_Sound->PlayWaveFile(3, false);
 		}
 	}
+
+
+	////////////////////
+	// Visual Effects //
+	////////////////////
+
+	D3DXVECTOR3 scrollSpeeds, scales;
+	D3DXVECTOR2 distortion1, distortion2, distortion3;
+	float distortionScale, distortionBias;
+
+	scrollSpeeds = D3DXVECTOR3(1.3f, 2.1f, 2.3f);
+	scales = D3DXVECTOR3(1.0f, 2.0f, 3.0f);
+
+	distortion1 = D3DXVECTOR2(0.1f, 0.2f);
+	distortion2 = D3DXVECTOR2(0.1f, 0.3f);
+	distortion3 = D3DXVECTOR2(0.1f, 0.1f);
+
+	distortionScale = 0.8f;
+	distortionBias = 0.5f;
+
+	m_D3D->TurnOnAlphaBlending();
+
+	// Fire
+	m_D3D->GetWorldMatrix(worldMatrix[28]);
+	/*D3DXMatrixRotationY(&worldMatrix, rotation);*/
+	D3DXMatrixTranslation(&translateMatrix, 1500.0f, 5484.0f, 2000.0f);
+	D3DXMatrixMultiply(&worldMatrix[28], &worldMatrix[28], &translateMatrix);
+	D3DXMatrixScaling(&scaleMatrix, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixMultiply(&worldMatrix[28], &worldMatrix[28], &scaleMatrix);
+
+	m_Model[28]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderFireTextureShader(m_D3D->GetDeviceContext(), m_Model[28]->GetIndexCount(), worldMatrix[28], viewMatrix, projectionMatrix,
+		m_Model[28]->GetTexture1(), m_Model[28]->GetTexture2(), m_Model[28]->GetTexture3(), frameTime, scrollSpeeds,
+		scales, distortion1, distortion2, distortion3, distortionScale, distortionBias);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Portal Blue
+	m_D3D->GetWorldMatrix(worldMatrix[29]);
+	/*D3DXMatrixRotationY(&worldMatrix, rotation);*/
+	D3DXMatrixTranslation(&translateMatrix, -1500.0f, 5484.0f, 1500.0f);
+	D3DXMatrixMultiply(&worldMatrix[29], &worldMatrix[29], &translateMatrix);
+	D3DXMatrixScaling(&scaleMatrix, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixMultiply(&worldMatrix[29], &worldMatrix[29], &scaleMatrix);
+
+	m_Model[29]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderFireTextureShader(m_D3D->GetDeviceContext(), m_Model[29]->GetIndexCount(), worldMatrix[29], viewMatrix, projectionMatrix,
+		m_Model[29]->GetTexture1(), m_Model[29]->GetTexture2(), m_Model[29]->GetTexture3(), frameTime, scrollSpeeds,
+		scales, distortion1, distortion2, distortion3, distortionScale, distortionBias);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Portal Red
+	m_D3D->GetWorldMatrix(worldMatrix[30]);
+	/*D3DXMatrixRotationY(&worldMatrix, rotation);*/
+	D3DXMatrixTranslation(&translateMatrix, 3500.0f, 5484.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[30], &worldMatrix[30], &translateMatrix);
+	D3DXMatrixScaling(&scaleMatrix, 0.1f, 0.1f, 0.1f);
+	D3DXMatrixMultiply(&worldMatrix[30], &worldMatrix[30], &scaleMatrix);
+
+	m_Model[30]->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderFireTextureShader(m_D3D->GetDeviceContext(), m_Model[30]->GetIndexCount(), worldMatrix[30], viewMatrix, projectionMatrix,
+		m_Model[30]->GetTexture1(), m_Model[30]->GetTexture2(), m_Model[30]->GetTexture3(), frameTime, scrollSpeeds,
+		scales, distortion1, distortion2, distortion3, distortionScale, distortionBias);
+	if (!result)
+	{
+		return false;
+	}
+
+	m_D3D->TurnOffAlphaBlending();
 
 
 	////////////////////////////
