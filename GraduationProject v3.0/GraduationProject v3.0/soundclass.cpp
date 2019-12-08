@@ -42,13 +42,13 @@ bool SoundClass::Initialize(HWND hwnd)
 		return false;
 	}
 
-	result = LoadWaveFile((char *)"../GraduationProject v3.0/data/bip.wav", &m_secondaryBuffer[1]);
+	result = LoadWaveFile((char *)"../GraduationProject v3.0/data/Sawing wood.wav", &m_secondaryBuffer[1]);
 	if (!result)
 	{
 		return false;
 	}
 
-	result = LoadWaveFile((char *)"../GraduationProject v3.0/data/Explosion1.wav", &m_secondaryBuffer[2]);
+	result = LoadWaveFile((char *)"../GraduationProject v3.0/data/Destruction wood.wav", &m_secondaryBuffer[2]);
 	if (!result)
 	{
 		return false;
@@ -332,9 +332,15 @@ void SoundClass::ShutdownWaveFile(IDirectSoundBuffer8** secondaryBuffer)
 }
 
 
-bool SoundClass::PlayWaveFile(int index = 0)
+bool SoundClass::PlayWaveFile(int index, bool isLoop, int volume)
 {
 	HRESULT result;
+	DWORD dwFlags;
+
+	if (isLoop)
+		dwFlags = DSBPLAY_LOOPING;
+	else
+		dwFlags = 0;
 
 	// Set position at the beginning of the sound buffer.
 	result = m_secondaryBuffer[index]->SetCurrentPosition(0);
@@ -344,14 +350,14 @@ bool SoundClass::PlayWaveFile(int index = 0)
 	}
 
 	// Set volume of the buffer to 100%.
-	result = m_secondaryBuffer[index]->SetVolume(-1000);
+	result = m_secondaryBuffer[index]->SetVolume(volume);
 	if(FAILED(result))
 	{
 		return false;
 	}
 
 	// Play the contents of the secondary sound buffer.
-	result = m_secondaryBuffer[index]->Play(0, 0, 0);
+	result = m_secondaryBuffer[index]->Play(0, 0, dwFlags);
 	if(FAILED(result))
 	{
 		return false;

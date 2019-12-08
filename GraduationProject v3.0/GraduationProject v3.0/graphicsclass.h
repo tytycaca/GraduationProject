@@ -3,18 +3,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef _GRAPHICSCLASS_H_
 #define _GRAPHICSCLASS_H_
-#define MAXMODELNUM 50
-#define CURRENTMODELNUM 28
-#define LOOTINGMODELNUM 12
-#define CONSTRUCTIONMODELNUM 1
-#define LIGHTNUM 2
-#define BITMAPNUM 2
 
 #include <vector>
 
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
+#include "define.h"
 #include "d3dclass.h"
 #include "shadermanagerclass.h"
 #include "cameraclass.h"
@@ -31,6 +26,8 @@
 
 #include "bitmapclass.h"
 #include "bitmapshaderclass.h"
+
+#include "soundclass.h"
 
 
 /////////////
@@ -89,6 +86,8 @@ private:
 	BitmapShaderClass* m_BitmapShader;
 
 	BitmapClass* m_Bitmap[BITMAPNUM];
+
+	SoundClass* m_Sound;
 
 	float m_movement;
 	float m_AImovement;

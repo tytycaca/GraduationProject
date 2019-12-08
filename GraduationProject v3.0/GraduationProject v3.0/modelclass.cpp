@@ -6,6 +6,7 @@
 
 ModelClass::ModelClass()
 {
+	colCheckEnabled = true;
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
 	m_Texture = 0;
@@ -55,7 +56,6 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 bool ModelClass::InitializeFire(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename1, WCHAR* textureFilename2, WCHAR* textureFilename3)
 {
 	bool result;
-
 
 	// Load in the model data,
 	result = LoadModel(modelFilename);
@@ -474,4 +474,14 @@ XMVECTOR ModelClass::GetBoundingBoxMax()
 void ModelClass::SetBoundingBoxMax(XMVECTOR max)
 {
 	boundingBoxMax = max;
+}
+
+bool ModelClass::GetColCheckEnabled()
+{
+	return colCheckEnabled;
+}
+
+void ModelClass::SetColCheckEnabled(bool tf)
+{
+	colCheckEnabled = tf;
 }

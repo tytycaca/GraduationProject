@@ -48,5 +48,6 @@ public:
 	static bool BoundingBoxCollision(const XMVECTOR& firstObjBoundingBoxMinVertex,
 		const XMVECTOR& firstObjBoundingBoxMaxVertex,
 		const XMVECTOR& secondObjBoundingBoxMinVertex,
-		const XMVECTOR& secondObjBoundingBoxMaxVertex);
+		const XMVECTOR& secondObjBoundingBoxMaxVertex,
+		bool);
 };

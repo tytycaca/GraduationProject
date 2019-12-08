@@ -8,6 +8,7 @@
 //////////////
 // INCLUDES //
 //////////////
+#include "define.h"
 #include <d3d11.h>
 #include <d3dx10math.h>
 #include <fstream>
@@ -95,13 +96,16 @@ private:
 	XMVECTOR boundingBoxMin;
 	XMVECTOR boundingBoxMax;
 
+	bool colCheckEnabled;
+
 public:
 	void MakeAABB(XMMATRIX);
 	XMVECTOR GetBoundingBoxMin();
 	void SetBoundingBoxMin(XMVECTOR);
 	XMVECTOR GetBoundingBoxMax();
 	void SetBoundingBoxMax(XMVECTOR);
-	XMMATRIX GetWorldMatrix();
+	bool GetColCheckEnabled();
+	void SetColCheckEnabled(bool);
 };
 
 #endif

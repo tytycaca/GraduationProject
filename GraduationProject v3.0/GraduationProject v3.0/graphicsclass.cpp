@@ -94,6 +94,25 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 
+	///////////
+	// Sound //
+	///////////
+
+	// Create the sound object.
+	m_Sound = new SoundClass;
+
+	// Initialize the sound object.
+	result = m_Sound->Initialize(hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize Direct Sound.", L"Error", MB_OK);
+		return false;
+	}
+
+	// Play the wave file now that it has been loaded.
+	result = m_Sound->PlayWaveFile(0, true, -1500);
+
+
 	////////////
 	// Camera //
 	////////////
@@ -1327,10 +1346,15 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 				m_Md5Model->GetBoundingBoxMin(),
 				m_Md5Model->GetBoundingBoxMax(),
 				m_Model[i]->GetBoundingBoxMin(),
-				m_Model[i]->GetBoundingBoxMax()
+				m_Model[i]->GetBoundingBoxMax(),
+				m_Model[i]->GetColCheckEnabled()
 			)
 			)
+		{
 			m_isRender[i - 15] = false;
+			m_Model[i]->SetColCheckEnabled(false);
+			m_Sound->PlayWaveFile(3, false);
+		}
 	}
 
 
@@ -1349,6 +1373,8 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 
 		m_obj += 1;
 		m_poly += 184;
+
+		m_Sound->PlayWaveFile(1, false, -300);
 
 		D3DXVECTOR3 tmpInsPos;
 		D3DXVECTOR3 transVec;
@@ -1379,6 +1405,8 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 
 		m_obj -= 1;
 		m_poly -= 184;
+
+		m_Sound->PlayWaveFile(2, false);
 
 		if(!insPos.empty())
 			insPos.pop_back();
@@ -1549,7 +1577,8 @@ void GraphicsClass::MoveCameraAndChar(int key)
 				m_Md5Model->GetBoundingBoxMin(),
 				m_Md5Model->GetBoundingBoxMax(),
 				m_Model[i]->GetBoundingBoxMin(),
-				m_Model[i]->GetBoundingBoxMax()))
+				m_Model[i]->GetBoundingBoxMax(),
+				m_Model[i]->GetColCheckEnabled()))
 			{
 				m_Camera->FrontWalk(-2.0f);
 			}
@@ -1587,7 +1616,8 @@ void GraphicsClass::MoveCameraAndChar(int key)
 				m_Md5Model->GetBoundingBoxMin(),
 				m_Md5Model->GetBoundingBoxMax(),
 				m_Model[i]->GetBoundingBoxMin(),
-				m_Model[i]->GetBoundingBoxMax()))
+				m_Model[i]->GetBoundingBoxMax(),
+				m_Model[i]->GetColCheckEnabled()))
 			{
 				m_Camera->FrontWalk(+2.0f);
 			}
@@ -1626,7 +1656,8 @@ void GraphicsClass::MoveCameraAndChar(int key)
 				m_Md5Model->GetBoundingBoxMin(),
 				m_Md5Model->GetBoundingBoxMax(),
 				m_Model[i]->GetBoundingBoxMin(),
-				m_Model[i]->GetBoundingBoxMax()))
+				m_Model[i]->GetBoundingBoxMax(),
+				m_Model[i]->GetColCheckEnabled()))
 			{
 				m_Camera->SideWalk(-1.0f);
 			}
@@ -1664,7 +1695,8 @@ void GraphicsClass::MoveCameraAndChar(int key)
 				m_Md5Model->GetBoundingBoxMin(),
 				m_Md5Model->GetBoundingBoxMax(),
 				m_Model[i]->GetBoundingBoxMin(),
-				m_Model[i]->GetBoundingBoxMax()))
+				m_Model[i]->GetBoundingBoxMax(),
+				m_Model[i]->GetColCheckEnabled()))
 			{
 				m_Camera->SideWalk(+1.0f);
 			}
@@ -1680,7 +1712,8 @@ void GraphicsClass::RotateCameraAndChar(float x, float y, float z)
 			m_Md5Model->GetBoundingBoxMin(),
 			m_Md5Model->GetBoundingBoxMax(),
 			m_Model[i]->GetBoundingBoxMin(),
-			m_Model[i]->GetBoundingBoxMax()))
+			m_Model[i]->GetBoundingBoxMax(),
+			m_Model[i]->GetColCheckEnabled()))
 		{
 			return;
 		}
@@ -1688,8 +1721,6 @@ void GraphicsClass::RotateCameraAndChar(float x, float y, float z)
 
 	m_Camera->SetRotation(0.0f, y, z);
 	m_charRot = m_Camera->GetRotation() * 0.0174532925f;
-
-	
 }
 
 void GraphicsClass::MovePad(int key, float frametime)

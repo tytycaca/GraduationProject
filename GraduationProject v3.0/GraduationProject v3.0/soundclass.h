@@ -16,6 +16,7 @@
 //////////////
 // INCLUDES //
 //////////////
+#include "define.h"
 #include <windows.h>
 #include <mmsystem.h>
 #include <dsound.h>
@@ -61,7 +62,7 @@ private:
 	void ShutdownWaveFile(IDirectSoundBuffer8**);
 
 public:
-	bool PlayWaveFile(int);
+	bool PlayWaveFile(int, bool, int volume = DEFAULTVOLUME);
 
 private:
 	int currentSoundPos;

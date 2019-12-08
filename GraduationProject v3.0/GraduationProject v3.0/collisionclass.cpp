@@ -147,8 +147,12 @@ bool CollisionClass::BoundingSphereCollision(const float firstObjBoundingSphere,
 bool CollisionClass::BoundingBoxCollision(const XMVECTOR& firstObjBoundingBoxMinVertex,
 	const XMVECTOR& firstObjBoundingBoxMaxVertex,
 	const XMVECTOR& secondObjBoundingBoxMinVertex,
-	const XMVECTOR& secondObjBoundingBoxMaxVertex)
+	const XMVECTOR& secondObjBoundingBoxMaxVertex,
+	bool checkEnabled = true)
 {
+	if (!checkEnabled)
+		return false;
+
 	//Is obj1's max X greater than obj2's min X? If not, obj1 is to the LEFT of obj2
 	if (XMVectorGetX(firstObjBoundingBoxMaxVertex) > XMVectorGetX(secondObjBoundingBoxMinVertex))
 
