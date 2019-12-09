@@ -1799,6 +1799,35 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	
 	m_D3D->TurnOffAlphaBlending();
 
+	// Turn the Z buffer back on now that all 2D rendering has completed.
+	m_D3D->TurnZBufferOn();
+
+
+	////////////////////
+	// Text Rendering //
+	////////////////////
+
+	m_D3D->GetWorldMatrix(worldMatrix[49]);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 20.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[49], &worldMatrix[49], &translateMatrix);
+
+	// Turn off the Z buffer to begin all 2D rendering.
+	m_D3D->TurnZBufferOff();
+	// Turn on the alpha blending before rendering the text.
+	m_D3D->TurnOnAlphaBlending();
+
+	// Render the text strings.
+	result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix[49], orthoMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+
+	/////////////////////
+	// Scene Rendering //
+	/////////////////////
+
 	// Title Scene (SceneType 0)
 	if (m_Game->GetSceneType() == 0)
 	{
@@ -1851,30 +1880,6 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 		{
 			return false;
 		}
-	}
-
-	// Turn the Z buffer back on now that all 2D rendering has completed.
-	m_D3D->TurnZBufferOn();
-
-
-	////////////////////
-	// Text Rendering //
-	////////////////////
-
-	m_D3D->GetWorldMatrix(worldMatrix[49]);
-	D3DXMatrixTranslation(&translateMatrix, 0.0f, 20.0f, 0.0f);
-	D3DXMatrixMultiply(&worldMatrix[49], &worldMatrix[49], &translateMatrix);
-
-	// Turn off the Z buffer to begin all 2D rendering.
-	m_D3D->TurnZBufferOff();
-	// Turn on the alpha blending before rendering the text.
-	m_D3D->TurnOnAlphaBlending();
-
-	// Render the text strings.
-	result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix[49], orthoMatrix);
-	if (!result)
-	{
-		return false;
 	}
 
 	// Turn off alpha blending after rendering the text.
