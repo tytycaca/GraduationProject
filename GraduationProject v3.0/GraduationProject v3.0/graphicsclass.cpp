@@ -922,6 +922,18 @@ bool GraphicsClass::Frame(int fps, int cpu, int obj, int poly, int screenX, int 
 	result = m_Text->SetCameraRot(m_Camera->GetRotation(), m_D3D->GetDeviceContext());
 	if (!result) return false;
 
+	result = m_Text->SetEmeralCnt(m_Game->GetEmeralCnt(), m_D3D->GetDeviceContext());
+	if (!result) return false;
+
+	result = m_Text->SetRubyCnt(m_Game->GetRubyCnt(), m_D3D->GetDeviceContext());
+	if (!result) return false;
+
+	result = m_Text->SetSapphCnt(m_Game->GetSapphCnt(), m_D3D->GetDeviceContext());
+	if (!result) return false;
+
+	result = m_Text->SetAmethCnt(m_Game->GetAmethCnt(), m_D3D->GetDeviceContext());
+	if (!result) return false;
+
 	m_Camera->TickUpdate();
 
 	// Render the graphics scene.
@@ -1713,38 +1725,6 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 		}
 	}
 
-	////////////////////
-	// Text Rendering //
-	////////////////////
-
-	m_D3D->GetWorldMatrix(worldMatrix[49]);
-	D3DXMatrixTranslation(&translateMatrix, 0.0f, 20.0f, 0.0f);
-	D3DXMatrixMultiply(&worldMatrix[49], &worldMatrix[49], &translateMatrix);
-
-	// Turn off the Z buffer to begin all 2D rendering.
-	m_D3D->TurnZBufferOff();
-	// Turn on the alpha blending before rendering the text.
-	m_D3D->TurnOnAlphaBlending();
-
-	// Render the text strings.
-	result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix[49], orthoMatrix);
-	if (!result)
-	{
-		return false;
-	}
-
-	// Turn off alpha blending after rendering the text.
-	m_D3D->TurnOffAlphaBlending();
-	// Turn the Z buffer back on now that all 2D rendering has completed.
-	m_D3D->TurnZBufferOn();
-
-	//// Set the Start Camera Rotation.
-	//if (isStart)
-	//{
-	//	m_Camera->SetRotation(20.0f, 0.0f, 0.0f);
-	//	isStart = false;
-	//}
-
 
 	//////////////////////
 	// Bitmap Rendering //
@@ -1770,6 +1750,8 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 		return false;
 	}
 
+	m_D3D->TurnOnAlphaBlending();
+
 	// Put the bitmap(UI Inventory HUD with Jewels.png) vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	result = m_Bitmap[1]->Render(m_D3D->GetDeviceContext(), 497, 827);
 	if (!result)
@@ -1783,8 +1765,6 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 	{
 		return false;
 	}
-
-	m_D3D->TurnOnAlphaBlending();
 
 	// Put the bitmap(Tutorial instruction resized.png) vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	result = m_Bitmap[5]->Render(m_D3D->GetDeviceContext(), 1070, 30);
@@ -1875,6 +1855,40 @@ bool GraphicsClass::Render(float rotation, DIMOUSESTATE mouseState, float frameT
 
 	// Turn the Z buffer back on now that all 2D rendering has completed.
 	m_D3D->TurnZBufferOn();
+
+
+	////////////////////
+	// Text Rendering //
+	////////////////////
+
+	m_D3D->GetWorldMatrix(worldMatrix[49]);
+	D3DXMatrixTranslation(&translateMatrix, 0.0f, 20.0f, 0.0f);
+	D3DXMatrixMultiply(&worldMatrix[49], &worldMatrix[49], &translateMatrix);
+
+	// Turn off the Z buffer to begin all 2D rendering.
+	m_D3D->TurnZBufferOff();
+	// Turn on the alpha blending before rendering the text.
+	m_D3D->TurnOnAlphaBlending();
+
+	// Render the text strings.
+	result = m_Text->Render(m_D3D->GetDeviceContext(), worldMatrix[49], orthoMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Turn off alpha blending after rendering the text.
+	m_D3D->TurnOffAlphaBlending();
+	// Turn the Z buffer back on now that all 2D rendering has completed.
+	m_D3D->TurnZBufferOn();
+
+	//// Set the Start Camera Rotation.
+	//if (isStart)
+	//{
+	//	m_Camera->SetRotation(20.0f, 0.0f, 0.0f);
+	//	isStart = false;
+	//}
+
 
 	// Present the rendered scene to the screen.
 	m_D3D->EndScene();

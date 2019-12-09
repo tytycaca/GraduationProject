@@ -364,29 +364,69 @@ bool TextClass::SetCameraRot(D3DXVECTOR3 rot, ID3D11DeviceContext* deviceContext
 	return true;
 }
 
-// ¼öÁ¤
-//bool TextClass::SetUpPos(D3DXVECTOR3 up, ID3D11DeviceContext* deviceContext)
-//{
-//	char tempString[3][32];
-//	char CameraUpString[32];
-//	bool result;
-//
-//	_itoa_s(up.x * 100.0f, tempString[0], 10);
-//	_itoa_s(up.y * 100.0f, tempString[1], 10);
-//	_itoa_s(up.z * 100.0f, tempString[2], 10);
-//
-//	strcpy_s(CameraUpString, "CamUp : ");
-//	strcat_s(CameraUpString, tempString[0]);
-//	strcat_s(CameraUpString, ",");
-//	strcat_s(CameraUpString, tempString[1]);
-//	strcat_s(CameraUpString, ",");
-//	strcat_s(CameraUpString, tempString[2]);
-//
-//	result = UpdateSentence(m_sentence[8], CameraUpString, 20, 180, 1.0f, 1.0f, 1.0f, deviceContext);
-//	if (!result) return false;
-//
-//	return true;
-//}
+bool TextClass::SetSapphCnt(int sapphCnt, ID3D11DeviceContext* deviceContext)
+{
+	char tempString[1][32];
+	char LootModelCountString[32];
+	bool result;
+
+	_itoa_s(sapphCnt, tempString[0], 10);
+
+	strcpy_s(LootModelCountString, tempString[0]);
+
+	result = UpdateSentence(m_sentence[7], LootModelCountString, 550, 900, 1.0f, 0.0f, 0.0f, deviceContext);
+	if (!result) return false;
+
+	return true;
+}
+
+bool TextClass::SetEmeralCnt(int emeralCnt, ID3D11DeviceContext* deviceContext)
+{
+	char tempString[1][32];
+	char LootModelCountString[32];
+	bool result;
+
+	_itoa_s(emeralCnt, tempString[0], 10);
+
+	strcpy_s(LootModelCountString, tempString[0]);
+
+	result = UpdateSentence(m_sentence[8], LootModelCountString, 620, 900, 1.0f, 0.0f, 0.0f, deviceContext);
+	if (!result) return false;
+
+	return true;
+}
+
+bool TextClass::SetAmethCnt(int amethCnt, ID3D11DeviceContext* deviceContext)
+{
+	char tempString[1][32];
+	char LootModelCountString[32];
+	bool result;
+
+	_itoa_s(amethCnt, tempString[0], 10);
+
+	strcpy_s(LootModelCountString, tempString[0]);
+
+	result = UpdateSentence(m_sentence[9], LootModelCountString, 750, 900, 1.0f, 0.0f, 0.0f, deviceContext);
+	if (!result) return false;
+
+	return true;
+}
+
+bool TextClass::SetRubyCnt(int rubyCnt, ID3D11DeviceContext* deviceContext)
+{
+	char tempString[1][32];
+	char LootModelCountString[32];
+	bool result;
+
+	_itoa_s(rubyCnt, tempString[0], 10);
+
+	strcpy_s(LootModelCountString, tempString[0]);
+
+	result = UpdateSentence(m_sentence[10], LootModelCountString, 820, 900, 1.0f, 0.0f, 0.0f, deviceContext);
+	if (!result) return false;
+
+	return true;
+}
 
 bool TextClass::InitializeSentence(SentenceType** sentence, int maxLength, ID3D11Device* device)
 {

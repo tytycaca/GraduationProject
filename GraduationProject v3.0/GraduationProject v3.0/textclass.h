@@ -4,11 +4,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef _TEXTCLASS_H_
 #define _TEXTCLASS_H_
-#define TEXTNUM 7
 
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
+#include "define.h"
 #include "fontclass.h"
 #include "fontshaderclass.h"
 
@@ -50,9 +50,11 @@ public:
 	bool SetScreenSize(int, int, ID3D11DeviceContext*);
 	bool SetCameraPos(D3DXVECTOR3, ID3D11DeviceContext*);
 	bool SetCameraRot(D3DXVECTOR3, ID3D11DeviceContext*);
+	bool SetEmeralCnt(int, ID3D11DeviceContext*);
+	bool SetRubyCnt(int, ID3D11DeviceContext*);
+	bool SetSapphCnt(int, ID3D11DeviceContext*);
+	bool SetAmethCnt(int, ID3D11DeviceContext*);
 
-	// ¼öÁ¤
-	//bool SetUpPos(D3DXVECTOR3 up, ID3D11DeviceContext* deviceContext);
 private:
 	bool InitializeSentence(SentenceType**, int, ID3D11Device*);
 	bool UpdateSentence(SentenceType*, char*, int, int, float, float, float, ID3D11DeviceContext*);
@@ -67,7 +69,7 @@ private:
 	SentenceType* m_sentence1;
 	SentenceType* m_sentence2;
 
-	SentenceType* m_sentence[8];
+	SentenceType* m_sentence[TEXTNUM];
 };
 
 #endif

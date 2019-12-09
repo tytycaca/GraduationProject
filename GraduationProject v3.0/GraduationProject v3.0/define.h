@@ -10,3 +10,4 @@
 #define BITMAPNUM 7
 #define DEFAULTVOLUME -1000
 #define SOUNDFILENUM 7
+#define TEXTNUM 11
